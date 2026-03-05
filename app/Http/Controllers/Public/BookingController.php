@@ -1,0 +1,385 @@
+<?php
+
+namespace App\Http\Controllers\Public;
+
+use App\Http\Controllers\Controller;
+use App\Models\Event;
+use App\Models\Accommodation;
+use App\Models\Booking;
+use App\Models\BookingItem;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+class BookingController extends Controller
+{
+    public function show(Event $event)
+    {
+        if ($event->status !== 'published') {
+            abort(404);
+        }
+
+        return view('public.booking.show', compact('event'));
+    }
+
+    public function addToCart(Request $request)
+    {
+        $request->validate([
+            'event_id' => 'required|exists:events,id',
+            'ticket_quantity' => 'required|integer|min:1|max:10',
+            'ticket_category' => 'required|string',
+        ]);
+
+        $event = Event::findOrFail($request->event_id);
+        $cart = Session::get('cart', []);
+        
+        // Calculate ticket price based on category
+        $ticketPrice = $this->calculateTicketPrice($event, $request->ticket_category);
+        
+        $cartItem = [
+            'event_id' => $event->id,
+            'ticket_quantity' => $request->ticket_quantity,
+            'ticket_category' => $request->ticket_category,
+            'ticket_price' => $ticketPrice,
+            'total_price' => $ticketPrice * $request->ticket_quantity,
+        ];
+
+        $cart[] = $cartItem;
+        Session::put('cart', $cart);
+
+        return redirect()->route('cart.index')->with('success', 'Tickets added to cart!');
+    }
+
+    public function cart()
+    {
+        try {
+            $cart = Session::get('cart', []);
+            $events = [];
+            $total = 0;
+
+            foreach ($cart as $item) {
+                if (!isset($item['event_id'])) {
+                    continue; // Skip invalid cart items
+                }
+                
+                $event = Event::find($item['event_id']);
+                if ($event) {
+                    $events[] = [
+                        'event' => $event,
+                        'quantity' => $item['ticket_quantity'] ?? 1,
+                        'category' => $item['ticket_category'] ?? 'general',
+                        'price' => $item['ticket_price'] ?? $event->base_price,
+                        'total' => $item['total_price'] ?? ($item['ticket_quantity'] ?? 1) * ($item['ticket_price'] ?? $event->base_price),
+                    ];
+                    $total += $item['total_price'] ?? (($item['ticket_quantity'] ?? 1) * ($item['ticket_price'] ?? $event->base_price));
+                }
+            }
+
+            return view('public.booking.cart', compact('events', 'total'));
+        } catch (\Exception $e) {
+            \Log::error('Cart error: ' . $e->getMessage());
+            \Log::error('Cart trace: ' . $e->getTraceAsString());
+            
+            // Return a simple error page instead of redirecting
+            return response()->view('public.booking.cart-error', [
+                'error' => $e->getMessage(),
+                'cart' => Session::get('cart', [])
+            ], 500);
+        }
+    }
+
+    public function removeFromCart($index)
+    {
+        $cart = Session::get('cart', []);
+        if (isset($cart[$index])) {
+            unset($cart[$index]);
+            $cart = array_values($cart); // Re-index array
+            Session::put('cart', $cart);
+            return redirect()->route('cart.index')->with('success', 'Item removed from cart!');
+        }
+
+        return redirect()->route('cart.index')->with('error', 'Item not found in cart!');
+    }
+
+    public function clearCart()
+    {
+        Session::forget('cart');
+        return redirect()->route('cart.index')->with('success', 'Cart cleared!');
+    }
+
+    public function accommodation()
+    {
+        try {
+            $cart = Session::get('cart', []);
+            
+            // For testing purposes, let's show accommodations even if cart is empty
+            // if (empty($cart)) {
+            //     return redirect()->route('public.concerts.index')->with('error', 'Your cart is empty!');
+            // }
+
+            // Get cities from cart items
+            $concertIds = collect($cart)->pluck('concert_id');
+            $cities = Concert::whereIn('id', $concertIds)->distinct()->pluck('city');
+
+            // Try to get active accommodations first
+            $accommodations = Accommodation::active()->orderBy('rating', 'desc');
+            
+            // If no active accommodations found, get all accommodations
+            if ($accommodations->count() == 0) {
+                $accommodations = Accommodation::orderBy('rating', 'desc');
+            }
+            
+            // Filter by cities if available
+            if (!$cities->isEmpty()) {
+                $accommodations = $accommodations->whereIn('city', $cities);
+            }
+            
+            $accommodations = $accommodations->paginate(12);
+
+            // Debug logging
+            \Log::info('Accommodations found: ' . $accommodations->count());
+            \Log::info('Cart: ' . json_encode($cart));
+            \Log::info('Cities: ' . json_encode($cities->toArray()));
+
+            return view('public.booking.accommodation', compact('accommodations'));
+        } catch (\Exception $e) {
+            \Log::error('Accommodation page error: ' . $e->getMessage());
+            return redirect()->route('public.concerts.index')->with('error', 'Unable to load accommodation options. Please try again.');
+        }
+    }
+
+    public function addAccommodation(Request $request, Accommodation $accommodation)
+    {
+        $request->validate([
+            'check_in' => 'required|date|after_or_equal:today',
+            'check_out' => 'required|date|after:check_in',
+            'guests' => 'required|integer|min:1|max:10',
+        ]);
+
+        $nights = \Carbon\Carbon::parse($request->check_in)->diffInDays($request->check_out);
+        $totalPrice = $accommodation->price_per_night * $nights;
+
+        $accommodationBooking = [
+            'accommodation_id' => $accommodation->id,
+            'check_in' => $request->check_in,
+            'check_out' => $request->check_out,
+            'guests' => $request->guests,
+            'nights' => $nights,
+            'price_per_night' => $accommodation->price_per_night,
+            'total_price' => $totalPrice,
+        ];
+
+        Session::put('accommodation_booking', $accommodationBooking);
+
+        return redirect()->route('public.booking.checkout')->with('success', 'Accommodation added to booking!');
+    }
+
+    public function checkout()
+    {
+        // Check if user is authenticated
+        if (!Auth::check()) {
+            // Store the intended URL for after login
+            Session::put('url.intended', route('public.booking.checkout'));
+            
+            return redirect()->route('login')
+                ->with('info', 'Please log in or create an account to complete your booking.');
+        }
+
+        $cart = Session::get('cart', []);
+        $accommodationBooking = Session::get('accommodation_booking');
+
+        if (empty($cart)) {
+            return redirect()->route('public.concerts.index')->with('error', 'Your cart is empty!');
+        }
+
+        $concerts = [];
+        $total = 0;
+
+        foreach ($cart as $item) {
+            $concert = Concert::find($item['concert_id']);
+            if ($concert) {
+                $concerts[] = [
+                    'concert' => $concert,
+                    'quantity' => $item['ticket_quantity'],
+                    'category' => $item['ticket_category'],
+                    'price' => $item['ticket_price'],
+                    'total' => $item['total_price'],
+                ];
+                $total += $item['total_price'];
+            }
+        }
+
+        $accommodation = null;
+        if ($accommodationBooking) {
+            $accommodation = Accommodation::find($accommodationBooking['accommodation_id']);
+            $total += $accommodationBooking['total_price'];
+        }
+
+        return view('public.booking.checkout', compact('concerts', 'accommodation', 'accommodationBooking', 'total'));
+    }
+
+    public function processBooking(Request $request)
+    {
+        $request->validate([
+            'customer_phone' => 'required|string|max:20',
+            'special_requests' => 'nullable|string|max:500',
+        ]);
+
+        $cart = Session::get('cart', []);
+        $accommodationBooking = Session::get('accommodation_booking');
+
+        if (empty($cart)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your cart is empty!'
+            ], 400);
+        }
+
+        DB::beginTransaction();
+        
+        try {
+            // Get authenticated user
+            $user = Auth::user();
+            if (!$user) {
+                throw new \Exception('User must be authenticated to complete booking.');
+            }
+
+            // Calculate total amount
+            $totalAmount = 0;
+            foreach ($cart as $item) {
+                $totalAmount += $item['total_price'];
+            }
+            if ($accommodationBooking) {
+                $totalAmount += $accommodationBooking['total_price'];
+            }
+
+            // Create booking record
+            $booking = Booking::create([
+                'user_id' => $user->id,
+                'booking_reference' => Booking::generateBookingReference(),
+                'total_amount' => $totalAmount,
+                'customer_name' => $user->name,
+                'customer_email' => $user->email,
+                'customer_phone' => $request->customer_phone,
+                'status' => 'pending',
+                'payment_method' => 'pending',
+                'booking_date' => now(),
+                'special_requests' => $request->special_requests,
+            ]);
+
+            // Process concert tickets
+            foreach ($cart as $item) {
+                $concert = Concert::find($item['concert_id']);
+                if ($concert) {
+                    // Check if enough tickets available
+                    if ($concert->available_tickets < $item['ticket_quantity']) {
+                        throw new \Exception('Not enough tickets available for ' . $concert->title);
+                    }
+
+                    // Create booking item
+                    BookingItem::create([
+                        'booking_id' => $booking->id,
+                        'bookable_type' => Concert::class,
+                        'bookable_id' => $concert->id,
+                        'quantity' => $item['ticket_quantity'],
+                        'unit_price' => $item['ticket_price'],
+                        'total_price' => $item['total_price'],
+                        'details' => ['ticket_category' => $item['ticket_category']]
+                    ]);
+
+                    // Update available tickets
+                    $concert->decrement('available_tickets', $item['ticket_quantity']);
+                }
+            }
+
+            // Process accommodation if selected
+            if ($accommodationBooking) {
+                $accommodation = Accommodation::find($accommodationBooking['accommodation_id']);
+                if ($accommodation) {
+                    BookingItem::create([
+                        'booking_id' => $booking->id,
+                        'bookable_type' => Accommodation::class,
+                        'bookable_id' => $accommodation->id,
+                        'quantity' => $accommodationBooking['nights'],
+                        'unit_price' => $accommodationBooking['price_per_night'],
+                        'total_price' => $accommodationBooking['total_price'],
+                        'details' => [
+                            'check_in' => $accommodationBooking['check_in'],
+                            'check_out' => $accommodationBooking['check_out'],
+                            'guests' => $accommodationBooking['guests']
+                        ]
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            // Clear cart
+            Session::forget('cart');
+            Session::forget('accommodation_booking');
+
+            // Store booking ID for confirmation page (fallback)
+            Session::put('booking_id', $booking->id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Booking created successfully! Please complete your payment.',
+                'redirect_url' => route('payment.show', $booking)
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking failed: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function confirmation(Booking $booking)
+    {
+        if ($booking->status !== 'confirmed') {
+            return redirect()->route('public.home')
+                ->with('error', 'This booking is not confirmed yet.');
+        }
+
+        $booking->load(['user', 'items.bookable']);
+        
+        return view('public.booking.confirmation', compact('booking'));
+    }
+
+    public function confirmationFromSession()
+    {
+        $bookingId = Session::get('booking_id');
+        
+        if (!$bookingId) {
+            return redirect()->route('public.home')->with('error', 'No booking found.');
+        }
+
+        $booking = Booking::with(['user', 'items.bookable'])->find($bookingId);
+        
+        if (!$booking) {
+            return redirect()->route('public.home')->with('error', 'Booking not found.');
+        }
+
+        // Clear booking ID from session
+        Session::forget('booking_id');
+
+        return view('public.booking.confirmation', compact('booking'));
+    }
+
+    private function calculateTicketPrice(Event $event, $category)
+    {
+        $ticketCategories = $event->ticket_categories ?? [];
+        
+        if (isset($ticketCategories[$category])) {
+            return $ticketCategories[$category]['price'] ?? $event->base_price;
+        }
+
+        return $event->base_price;
+    }
+}
+
