@@ -54,8 +54,8 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4 class="card-title">{{ number_format($stats['total_concerts']) }}</h4>
-                        <p class="card-text">Total Concerts</p>
+                        <h4 class="card-title">{{ number_format($stats['total_events']) }}</h4>
+                        <p class="card-text">Total Events</p>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-music fa-2x"></i>
@@ -178,8 +178,8 @@
                     <a href="{{ route('admin.reports.revenue') }}" class="btn btn-success">
                         <i class="fas fa-chart-line me-2"></i>Revenue Analysis
                     </a>
-                    <a href="{{ route('admin.reports.concerts') }}" class="btn btn-info">
-                        <i class="fas fa-music me-2"></i>Concert Reports
+                    <a href="{{ route('admin.reports.events') }}" class="btn btn-info">
+                        <i class="fas fa-music me-2"></i>Event Reports
                     </a>
                     <a href="{{ route('admin.reports.users') }}" class="btn btn-warning">
                         <i class="fas fa-users me-2"></i>User Reports
@@ -237,26 +237,26 @@
     <div class="col-lg-6">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Upcoming Concerts</h5>
+                <h5 class="card-title mb-0">Upcoming Events</h5>
             </div>
             <div class="card-body">
-                @if($upcomingConcerts->count() > 0)
+                @if($upcomingEvents->count() > 0)
                     <div class="list-group list-group-flush">
-                        @foreach($upcomingConcerts as $concert)
+                        @foreach($upcomingEvents as $event)
                             <div class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h6 class="mb-1">{{ $concert->title }}</h6>
-                                    <p class="mb-1 text-muted">{{ $concert->artist }}</p>
-                                    <small class="text-muted">{{ $concert->event_date->format('M d, Y') }}</small>
+                                    <h6 class="mb-1">{{ $event->title }}</h6>
+                                    <p class="mb-1 text-muted">{{ $event->artist }}</p>
+                                    <small class="text-muted">{{ $event->event_date->format('M d, Y') }}</small>
                                 </div>
                                 <div class="text-end">
-                                    <span class="badge bg-primary">{{ $concert->bookings_count ?? 0 }} bookings</span>
+                                    <span class="badge bg-primary">{{ $event->bookings_count ?? 0 }} bookings</span>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 @else
-                    <p class="text-muted">No upcoming concerts found.</p>
+                    <p class="text-muted">No upcoming events found.</p>
                 @endif
             </div>
         </div>

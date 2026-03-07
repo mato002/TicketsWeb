@@ -19,10 +19,10 @@ class AdminReportsController extends Controller
     {
         $stats = $this->getDashboardStats();
         $recentBookings = $this->getRecentBookings();
-        $upcomingConcerts = $this->getUpcomingConcerts();
+        $upcomingEvents = $this->getUpcomingEvents();
         $monthlyRevenue = $this->getMonthlyRevenue();
         
-        return view('admin.reports.index', compact('stats', 'recentBookings', 'upcomingConcerts', 'monthlyRevenue'));
+        return view('admin.reports.index', compact('stats', 'recentBookings', 'upcomingEvents', 'monthlyRevenue'));
     }
 
     /**
@@ -55,9 +55,9 @@ class AdminReportsController extends Controller
     }
 
     /**
-     * Show concert reports
+     * Show event reports
      */
-    public function concerts(Request $request)
+    public function events(Request $request)
     {
         $query = Concert::withCount('bookings');
 
@@ -74,12 +74,12 @@ class AdminReportsController extends Controller
             $query->where('status', $request->status);
         }
 
-        $concerts = $query->orderBy('event_date', 'desc')->paginate(20);
+        $events = $query->orderBy('event_date', 'desc')->paginate(20);
         
-        // Concert statistics
-        $concertStats = $this->getConcertStats($request);
+        // Event statistics
+        $eventStats = $this->getConcertStats($request);
         
-        return view('admin.reports.concerts', compact('concerts', 'concertStats'));
+        return view('admin.reports.concerts', compact('events', 'eventStats'));
     }
 
     /**
@@ -213,7 +213,7 @@ class AdminReportsController extends Controller
         return [
             'total_bookings' => Booking::count(),
             'total_revenue' => Booking::where('status', '!=', 'cancelled')->sum('total_amount'),
-            'total_concerts' => Concert::count(),
+            'total_events' => Concert::count(),
             'total_users' => User::count(),
             'today_bookings' => Booking::whereDate('created_at', $today)->count(),
             'today_revenue' => Booking::whereDate('created_at', $today)->where('status', '!=', 'cancelled')->sum('total_amount'),
@@ -239,9 +239,9 @@ class AdminReportsController extends Controller
     }
 
     /**
-     * Get upcoming concerts
+     * Get upcoming events
      */
-    private function getUpcomingConcerts()
+    private function getUpcomingEvents()
     {
         return Concert::where('event_date', '>=', Carbon::today())
             ->where('status', 'published')
@@ -257,7 +257,7 @@ class AdminReportsController extends Controller
     {
         return Booking::where('status', '!=', 'cancelled')
             ->where('created_at', '>=', Carbon::now()->subMonths(6))
-            ->selectRaw('strftime(\'%Y-%m\', created_at) as month, SUM(total_amount) as revenue')
+            ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, SUM(total_amount) as revenue')
             ->groupBy('month')
             ->orderBy('month', 'asc')
             ->get();
@@ -343,7 +343,7 @@ class AdminReportsController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        return $query->selectRaw('strftime(\'%Y-%m\', created_at) as month, SUM(total_amount) as revenue')
+        return $query->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, SUM(total_amount) as revenue')
             ->groupBy('month')
             ->orderBy('month', 'asc')
             ->get();
@@ -354,8 +354,7 @@ class AdminReportsController extends Controller
      */
     private function getRevenueByConcert($query)
     {
-        return $query->join('booking_items', 'bookings.id', '=', 'booking_items.booking_id')
-            ->join('concerts', 'booking_items.bookable_id', '=', 'concerts.id')
+        return $query->join('concerts', 'booking_items.bookable_id', '=', 'concerts.id')
             ->where('booking_items.bookable_type', Concert::class)
             ->selectRaw('concerts.title, concerts.artist, SUM(booking_items.total_price) as revenue, COUNT(bookings.id) as booking_count')
             ->groupBy('concerts.id', 'concerts.title', 'concerts.artist')

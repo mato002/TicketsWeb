@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Accommodation;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -221,6 +222,87 @@ class DashboardController extends Controller
         ]);
 
         return view('public.dashboard.notifications', compact('notifications'));
+    }
+
+    public function payments(Request $request)
+    {
+        $user = Auth::user();
+        
+        // Build query for user's payments through bookings
+        $paymentsQuery = $user->bookings()
+            ->with(['event'])
+            ->whereNotNull('payment_details')
+            ->orderBy('created_at', 'desc');
+
+        // Apply filters
+        if ($request->filled('status')) {
+            $paymentsQuery->where('status', $request->status);
+        }
+
+        if ($request->filled('payment_method')) {
+            $paymentsQuery->where('payment_method', $request->payment_method);
+        }
+
+        if ($request->filled('date_from')) {
+            $paymentsQuery->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $paymentsQuery->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $payments = $paymentsQuery->paginate(15);
+
+        // Calculate statistics
+        $allBookings = $user->bookings()->whereNotNull('payment_details')->get();
+        $successfulPayments = $allBookings->where('status', 'confirmed')->count();
+        $pendingPayments = $allBookings->where('status', 'pending')->count();
+        $totalSpent = $allBookings->where('status', 'confirmed')->sum('total_amount');
+
+        // Transform bookings to payment-like objects for the view
+        $paymentCollection = $payments->getCollection()->map(function ($booking) {
+            $paymentDetails = json_decode($booking->payment_details ?? '{}', true);
+            
+            return (object) [
+                'id' => $booking->id,
+                'transaction_id' => $booking->transaction_id ?? $booking->mpesa_receipt ?? 'N/A',
+                'booking' => $booking,
+                'amount' => $booking->total_amount,
+                'payment_method' => $booking->payment_method ?? 'credit_card',
+                'status' => $booking->status,
+                'created_at' => $booking->created_at,
+                'payment_details' => $paymentDetails,
+            ];
+        });
+
+        $payments->setCollection($paymentCollection);
+
+        return view('public.dashboard.payments', compact(
+            'payments', 
+            'successfulPayments', 
+            'pendingPayments', 
+            'totalSpent'
+        ));
+    }
+
+    public function paymentReceipt($paymentId)
+    {
+        $user = Auth::user();
+        $booking = $user->bookings()->findOrFail($paymentId);
+        
+        $paymentDetails = json_decode($booking->payment_details ?? '{}', true);
+        
+        return view('public.dashboard.receipt', compact('booking', 'paymentDetails'));
+    }
+
+    public function paymentInvoice($paymentId)
+    {
+        $user = Auth::user();
+        $booking = $user->bookings()->findOrFail($paymentId);
+        
+        // Generate PDF invoice (you can use a PDF library like dompdf)
+        // For now, return a simple HTML view
+        return view('public.dashboard.invoice', compact('booking'));
     }
 }
 

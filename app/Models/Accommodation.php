@@ -71,7 +71,7 @@ class Accommodation extends Model
     // Accessors
     public function getFormattedPriceAttribute()
     {
-        return '$' . number_format($this->price_per_night, 2);
+        return 'KSH ' . number_format($this->price_per_night, 2);
     }
 
     public function getStatusBadgeAttribute()

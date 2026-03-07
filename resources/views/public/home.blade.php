@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
-@section('title', 'EventHub - Discover Amazing Events')
-@section('description', 'Find and book the best events including sports, music festivals, comedy, car shows, travel, hiking, art, and gallery events. Discover upcoming events, secure your tickets, and book nearby accommodation all in one place.')
+@section('title', 'TwendeeTickets - Discover Amazing Events')
+@section('description', 'Find and book the best events including sports, music festivals, comedy, car shows, travel, hiking, art, and gallery events. Discover upcoming events, secure your tickets, and book nearby accommodation all in one place with TwendeeTickets.')
 
 @section('content')
 <!-- Hero Section -->

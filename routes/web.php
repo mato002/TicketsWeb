@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ConcertController;
 use App\Http\Controllers\Admin\AccommodationController;
 use App\Http\Controllers\Admin\AdminBookingController;
+use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\AdminReportsController;
@@ -29,10 +30,13 @@ Route::post('/admin/logout', [AdminLoginController::class, 'destroy'])
     ->middleware('admin')
     ->name('admin.logout');
 
-// Public Routes
+// Public Pages
 Route::get('/', [HomeController::class, 'index'])->name('public.home');
-Route::get('/search', [HomeController::class, 'search'])->name('public.search');
-
+Route::get('/about', function() { return view('public.pages.about'); })->name('public.about');
+Route::get('/contact', function() { return view('public.pages.contact'); })->name('public.contact');
+Route::get('/refund', function() { return view('public.pages.refund'); })->name('public.refund');
+Route::get('/terms', function() { return view('public.pages.terms'); })->name('public.terms');
+Route::get('/faq', [HelpController::class, 'faq'])->name('public.faq');
 
 // Event Routes
 Route::prefix('events')->name('public.events.')->group(function () {
@@ -70,6 +74,7 @@ Route::prefix('payment')->name('payment.')->group(function () {
     Route::get('/{booking}', [PaymentController::class, 'show'])->name('show');
     Route::post('/{booking}/process', [PaymentController::class, 'process'])->name('process');
     Route::post('/calculate-fees', [PaymentController::class, 'calculateFees'])->name('calculate-fees');
+    Route::post('/mpesa/callback', [PaymentController::class, 'mpesaCallback'])->name('mpesa.callback');
 });
 
 // Debug accommodation route
@@ -129,6 +134,9 @@ Route::prefix('dashboard')->name('public.dashboard.')->middleware('auth:web')->g
     Route::get('/bookings/{booking}', [DashboardController::class, 'bookingDetails'])->name('booking-details');
     Route::get('/bookings/{booking}/ticket', [DashboardController::class, 'downloadTicket'])->name('download-ticket');
     Route::post('/bookings/{booking}/cancel', [DashboardController::class, 'cancelBooking'])->name('cancel-booking');
+    Route::get('/payments', [DashboardController::class, 'payments'])->name('payments');
+    Route::get('/payments/{paymentId}/receipt', [DashboardController::class, 'paymentReceipt'])->name('payment-receipt');
+    Route::get('/payments/{paymentId}/invoice', [DashboardController::class, 'paymentInvoice'])->name('payment-invoice');
     Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
     Route::post('/profile', [DashboardController::class, 'updateProfile'])->name('update-profile');
     Route::post('/profile/password', [DashboardController::class, 'updatePassword'])->name('update-password');
@@ -145,6 +153,7 @@ Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
     Route::resource('events', ConcertController::class);
     Route::patch('/events/{event}/toggle-featured', [ConcertController::class, 'toggleFeatured'])->name('events.toggle-featured');
     Route::patch('/events/{event}/status', [ConcertController::class, 'updateStatus'])->name('events.update-status');
+    Route::get('/events/export', [ConcertController::class, 'export'])->name('events.export');
     
     // Accommodation Routes
     Route::resource('accommodations', AccommodationController::class);
@@ -190,6 +199,15 @@ Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
     });
     
     // Admin Payment Routes
+    Route::prefix('payments')->name('payments.')->group(function () {
+        Route::get('/', [AdminPaymentController::class, 'index'])->name('index');
+        Route::get('/{transactionId}/details', [AdminPaymentController::class, 'details'])->name('details');
+        Route::get('/{transactionId}/receipt', [AdminPaymentController::class, 'receipt'])->name('receipt');
+        Route::get('/{transactionId}/info', [AdminPaymentController::class, 'info'])->name('info');
+        Route::post('/{transactionId}/complete', [AdminPaymentController::class, 'markAsCompleted'])->name('complete');
+        Route::get('/export', [AdminPaymentController::class, 'export'])->name('export');
+    });
+    
     Route::post('/bookings/{booking}/refund', [PaymentController::class, 'refund'])->name('bookings.refund');
 });
 

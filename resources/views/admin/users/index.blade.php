@@ -178,7 +178,7 @@
                                         
                                         <!-- Delete User -->
                                         <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="d-inline" 
-                                              onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.')">
+                                              onsubmit="event.preventDefault(); deleteUser(this);">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
@@ -280,6 +280,22 @@
 function exportUsers() {
     // Add export functionality here
     alert('Export functionality will be implemented soon!');
+}
+
+function deleteUser(form) {
+    Swal.fire({
+        title: 'Delete User?',
+        text: "This action cannot be undone and will remove all user data!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });
 }
 </script>
 @endpush

@@ -20,10 +20,15 @@ class Booking extends Model
         'customer_phone',
         'status',
         'payment_method',
+        'transaction_id',
+        'mpesa_receipt',
+        'payment_details',
+        'failed_reason',
         'special_requests',
         'booking_date',
         'confirmed_at',
-        'cancelled_at'
+        'cancelled_at',
+        'is_guest_booking'
     ];
 
     protected $casts = [
@@ -68,7 +73,7 @@ class Booking extends Model
     // Accessors
     public function getFormattedTotalAmountAttribute()
     {
-        return '$' . number_format($this->total_amount, 2);
+        return 'KSH ' . number_format($this->total_amount, 2);
     }
 
     // Removed getFormattedTicketPriceAttribute as ticket_price field no longer exists

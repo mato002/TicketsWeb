@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class BookingController extends Controller
 {
@@ -116,12 +117,12 @@ class BookingController extends Controller
             
             // For testing purposes, let's show accommodations even if cart is empty
             // if (empty($cart)) {
-            //     return redirect()->route('public.concerts.index')->with('error', 'Your cart is empty!');
+            //     return redirect()->route('public.events.index')->with('error', 'Your cart is empty!');
             // }
 
             // Get cities from cart items
-            $concertIds = collect($cart)->pluck('concert_id');
-            $cities = Concert::whereIn('id', $concertIds)->distinct()->pluck('city');
+            $eventIds = collect($cart)->pluck('event_id');
+            $cities = Event::whereIn('id', $eventIds)->distinct()->pluck('city');
 
             // Try to get active accommodations first
             $accommodations = Accommodation::active()->orderBy('rating', 'desc');
@@ -146,7 +147,7 @@ class BookingController extends Controller
             return view('public.booking.accommodation', compact('accommodations'));
         } catch (\Exception $e) {
             \Log::error('Accommodation page error: ' . $e->getMessage());
-            return redirect()->route('public.concerts.index')->with('error', 'Unable to load accommodation options. Please try again.');
+            return redirect()->route('public.events.index')->with('error', 'Unable to load accommodation options. Please try again.');
         }
     }
 
@@ -178,30 +179,21 @@ class BookingController extends Controller
 
     public function checkout()
     {
-        // Check if user is authenticated
-        if (!Auth::check()) {
-            // Store the intended URL for after login
-            Session::put('url.intended', route('public.booking.checkout'));
-            
-            return redirect()->route('login')
-                ->with('info', 'Please log in or create an account to complete your booking.');
-        }
-
         $cart = Session::get('cart', []);
         $accommodationBooking = Session::get('accommodation_booking');
 
         if (empty($cart)) {
-            return redirect()->route('public.concerts.index')->with('error', 'Your cart is empty!');
+            return redirect()->route('public.events.index')->with('error', 'Your cart is empty!');
         }
 
-        $concerts = [];
+        $events = [];
         $total = 0;
 
         foreach ($cart as $item) {
-            $concert = Concert::find($item['concert_id']);
-            if ($concert) {
-                $concerts[] = [
-                    'concert' => $concert,
+            $event = Event::find($item['event_id']);
+            if ($event) {
+                $events[] = [
+                    'event' => $event,
                     'quantity' => $item['ticket_quantity'],
                     'category' => $item['ticket_category'],
                     'price' => $item['ticket_price'],
@@ -217,15 +209,31 @@ class BookingController extends Controller
             $total += $accommodationBooking['total_price'];
         }
 
-        return view('public.booking.checkout', compact('concerts', 'accommodation', 'accommodationBooking', 'total'));
+        // Check if user is authenticated, otherwise show guest checkout
+        $user = Auth::user();
+        $isGuest = !$user;
+
+        return view('public.booking.checkout', compact('events', 'accommodation', 'accommodationBooking', 'total', 'user', 'isGuest'));
     }
 
     public function processBooking(Request $request)
     {
-        $request->validate([
-            'customer_phone' => 'required|string|max:20',
-            'special_requests' => 'nullable|string|max:500',
-        ]);
+        // Validate based on whether user is guest or authenticated
+        if (Auth::check()) {
+            $request->validate([
+                'customer_phone' => 'required|string|max:20',
+                'special_requests' => 'nullable|string|max:500',
+            ]);
+        } else {
+            $request->validate([
+                'customer_name' => 'required|string|max:255',
+                'customer_email' => 'required|email|max:255',
+                'customer_phone' => 'required|string|max:20',
+                'create_account' => 'nullable|boolean',
+                'password' => 'required_if:create_account,1|string|min:8|confirmed',
+                'special_requests' => 'nullable|string|max:500',
+            ]);
+        }
 
         $cart = Session::get('cart', []);
         $accommodationBooking = Session::get('accommodation_booking');
@@ -240,10 +248,34 @@ class BookingController extends Controller
         DB::beginTransaction();
         
         try {
-            // Get authenticated user
             $user = Auth::user();
+            
+            // Handle guest checkout or create account
             if (!$user) {
-                throw new \Exception('User must be authenticated to complete booking.');
+                // Check if user wants to create account
+                if ($request->create_account) {
+                    // Create new user account
+                    $user = User::create([
+                        'name' => $request->customer_name,
+                        'email' => $request->customer_email,
+                        'password' => bcrypt($request->password),
+                        'email_verified_at' => now(), // Auto-verify for checkout
+                    ]);
+                    
+                    // Log in the new user
+                    Auth::login($user);
+                } else {
+                    // Create a temporary guest user record
+                    $user = User::create([
+                        'name' => $request->customer_name,
+                        'email' => $request->customer_email,
+                        'password' => bcrypt(Str::random(32)), // Random password for guest
+                        'is_guest' => true,
+                        'email_verified_at' => now(),
+                    ]);
+                    
+                    // Don't log in guest users, but use their ID for booking
+                }
             }
 
             // Calculate total amount
@@ -260,29 +292,30 @@ class BookingController extends Controller
                 'user_id' => $user->id,
                 'booking_reference' => Booking::generateBookingReference(),
                 'total_amount' => $totalAmount,
-                'customer_name' => $user->name,
-                'customer_email' => $user->email,
+                'customer_name' => $request->customer_name ?? $user->name,
+                'customer_email' => $request->customer_email ?? $user->email,
                 'customer_phone' => $request->customer_phone,
                 'status' => 'pending',
                 'payment_method' => 'pending',
                 'booking_date' => now(),
                 'special_requests' => $request->special_requests,
+                'is_guest_booking' => !Auth::check(),
             ]);
 
-            // Process concert tickets
+            // Process event tickets
             foreach ($cart as $item) {
-                $concert = Concert::find($item['concert_id']);
-                if ($concert) {
+                $event = Event::find($item['event_id']);
+                if ($event) {
                     // Check if enough tickets available
-                    if ($concert->available_tickets < $item['ticket_quantity']) {
-                        throw new \Exception('Not enough tickets available for ' . $concert->title);
+                    if ($event->available_tickets < $item['ticket_quantity']) {
+                        throw new \Exception('Not enough tickets available for ' . $event->title);
                     }
 
                     // Create booking item
                     BookingItem::create([
                         'booking_id' => $booking->id,
-                        'bookable_type' => Concert::class,
-                        'bookable_id' => $concert->id,
+                        'bookable_type' => Event::class,
+                        'bookable_id' => $event->id,
                         'quantity' => $item['ticket_quantity'],
                         'unit_price' => $item['ticket_price'],
                         'total_price' => $item['total_price'],
@@ -290,7 +323,7 @@ class BookingController extends Controller
                     ]);
 
                     // Update available tickets
-                    $concert->decrement('available_tickets', $item['ticket_quantity']);
+                    $event->decrement('available_tickets', $item['ticket_quantity']);
                 }
             }
 

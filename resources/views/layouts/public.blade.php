@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'EventHub - Your Ultimate Event Booking Experience')</title>
+    <title>@yield('title', 'TwendeeTickets - Your Ultimate Event Booking Experience')</title>
     <meta name="description" content="@yield('description', 'Discover and book amazing events with ease. Find the best sports, music festivals, comedy, car shows, travel, hiking, art, and gallery events, secure your tickets, and book nearby accommodation all in one place.')">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
-
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Additional Styles -->
     <style>
@@ -35,19 +32,21 @@
             background: linear-gradient(45deg, #ff6b6b, #feca57);
         }
         
-        /* Mobile responsiveness improvements */
+        /* Enhanced mobile responsiveness */
         @media (max-width: 768px) {
             .hero-gradient {
-                padding: 3rem 0;
+                padding: 2rem 0;
             }
             
             .hero-gradient h1 {
-                font-size: 2rem;
-                line-height: 1.2;
+                font-size: 1.75rem;
+                line-height: 1.1;
+                margin-bottom: 1rem;
             }
             
             .hero-gradient p {
-                font-size: 1rem;
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
             }
             
             .event-card {
@@ -58,24 +57,69 @@
                 position: relative !important;
                 top: 0 !important;
             }
+            
+            /* Better mobile spacing */
+            .py-20 { padding-top: 3rem; padding-bottom: 3rem; }
+            .py-16 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+            .py-8 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+            .px-8 { padding-left: 1rem; padding-right: 1rem; }
         }
         
-        /* Better mobile touch targets */
+        /* Enhanced mobile touch targets */
         @media (max-width: 640px) {
             button, a {
-                min-height: 44px;
-                min-width: 44px;
+                min-height: 48px;
+                min-width: 48px;
+                padding: 12px 16px;
+                font-size: 16px;
             }
             
-            .grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 {
+            .grid-cols-1.md\:grid-cols-2.xl\:grid-cols-3 {
                 grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            /* Mobile-specific button sizing */
+            .bg-purple-600, .bg-orange-500, .bg-green-600 {
+                padding: 14px 20px !important;
+                font-size: 16px !important;
+                font-weight: 600;
+                border-radius: 12px;
+            }
+            
+            /* Better mobile form inputs */
+            input, select, textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 12px 16px;
+                border-radius: 8px;
+            }
+            
+            /* Mobile navigation improvements */
+            .nav-link {
+                padding: 16px 20px;
+                font-size: 16px;
             }
         }
         
-        /* Improve form inputs on mobile */
-        @media (max-width: 640px) {
-            input, select, textarea {
-                font-size: 16px; /* Prevents zoom on iOS */
+        /* Ultra-mobile optimization */
+        @media (max-width: 480px) {
+            .hero-gradient h1 {
+                font-size: 1.5rem;
+            }
+            
+            .hero-gradient p {
+                font-size: 0.875rem;
+            }
+            
+            /* Compact grid for small screens */
+            .grid-cols-1 {
+                gap: 0.75rem;
+            }
+            
+            /* Larger touch targets for small screens */
+            button, a {
+                min-height: 52px;
+                padding: 14px 18px;
             }
         }
     </style>
@@ -88,12 +132,22 @@
                 <!-- Logo -->
                 <div class="flex items-center">
                     <a href="{{ route('public.home') }}" class="flex items-center space-x-2">
-                        <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
-                            </svg>
-                        </div>
-                        <span class="text-xl font-bold text-gray-900">EventHub</span>
+                        @if(file_exists(public_path('images/logo/logo.png')))
+                            <img src="{{ asset('images/logo/logo.png') }}" alt="TwendeeTickets Logo" class="h-8 w-auto">
+                        @elseif(file_exists(public_path('images/logo/logo.jpg')))
+                            <img src="{{ asset('images/logo/logo.jpg') }}" alt="TwendeeTickets Logo" class="h-8 w-auto">
+                        @elseif(file_exists(public_path('images/logo/logo.jpeg')))
+                            <img src="{{ asset('images/logo/logo.jpeg') }}" alt="TwendeeTickets Logo" class="h-8 w-auto">
+                        @elseif(file_exists(public_path('images/logo/logo.svg')))
+                            <img src="{{ asset('images/logo/logo.svg') }}" alt="TwendeeTickets Logo" class="h-8 w-auto">
+                        @else
+                            <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
+                                </svg>
+                            </div>
+                        @endif
+                        <span class="text-xl font-bold text-gray-900">TwendeeTickets</span>
                     </a>
                 </div>
 
@@ -101,6 +155,8 @@
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="{{ route('public.home') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Home</a>
                     <a href="{{ route('public.events.index') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Events</a>
+                    <a href="{{ route('public.about') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">About</a>
+                    <a href="{{ route('public.contact') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Contact</a>
                     <a href="{{ route('public.help.index') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Help</a>
                 </div>
 
@@ -247,12 +303,22 @@
                 <!-- Company Info -->
                 <div class="col-span-1 md:col-span-2">
                     <div class="flex items-center space-x-2 mb-4">
-                        <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
-                            </svg>
-                        </div>
-                        <span class="text-xl font-bold">EventHub</span>
+                        @if(file_exists(public_path('images/logo/logo.png')))
+                            <img src="{{ asset('images/logo/logo.png') }}" alt="TwendeeTickets Logo" class="h-8 w-auto">
+                        @elseif(file_exists(public_path('images/logo/logo.jpg')))
+                            <img src="{{ asset('images/logo/logo.jpg') }}" alt="TwendeeTickets Logo" class="h-8 w-auto">
+                        @elseif(file_exists(public_path('images/logo/logo.jpeg')))
+                            <img src="{{ asset('images/logo/logo.jpeg') }}" alt="TwendeeTickets Logo" class="h-8 w-auto">
+                        @elseif(file_exists(public_path('images/logo/logo.svg')))
+                            <img src="{{ asset('images/logo/logo.svg') }}" alt="TwendeeTickets Logo" class="h-8 w-auto">
+                        @else
+                            <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
+                                </svg>
+                            </div>
+                        @endif
+                        <span class="text-xl font-bold">TwendeeTickets</span>
                     </div>
                     <p class="text-gray-400 mb-4">Your ultimate destination for discovering and booking amazing events. Find the best concerts, shows, performances, and experiences, secure your tickets, and book nearby accommodation all in one place.</p>
                     <div class="flex space-x-4">
@@ -298,12 +364,44 @@
             </div>
 
             <div class="border-t border-gray-800 mt-8 pt-8 text-center">
-                <p class="text-gray-400">&copy; {{ date('Y') }} EventHub. All rights reserved.</p>
+                <p class="text-gray-400">&copy; {{ date('Y') }} TwendeeTickets. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Session Flash Notifications -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                timer: 3000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '{{ session('error') }}',
+                timer: 5000,
+                showConfirmButton: true
+            });
+        @endif
+    });
+    </script>
+    
     @stack('scripts')
 </body>
 </html>

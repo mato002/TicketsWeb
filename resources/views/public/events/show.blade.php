@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', $event->title . ' - EventHub')
+@section('title', $event->title . ' - TwendeeTickets')
 @section('description', $event->description ? Str::limit($event->description, 160) : 'Join us for an amazing event experience with ' . $event->organizer . ' at ' . $event->venue . ' on ' . $event->event_date->format('M j, Y') . '.')
 
 @section('content')
@@ -108,7 +108,7 @@
                                     @foreach($event->ticket_categories as $category)
                                         <div class="flex justify-between text-sm">
                                             <span class="text-gray-600">{{ $category['name'] ?? 'Standard' }}</span>
-                                            <span class="font-medium">${{ number_format($category['price'] ?? $event->base_price, 2) }}</span>
+                                            <span class="font-medium">KSH {{ number_format($category['price'] ?? $event->base_price, 2) }}</span>
                                         </div>
                                     @endforeach
                                 </div>

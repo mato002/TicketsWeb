@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        @if(count($concerts) > 0)
+        @if(count($events) > 0)
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Cart Items -->
                 <div class="lg:col-span-2">
@@ -38,13 +38,13 @@
                         <h1 class="text-2xl font-bold text-gray-900 mb-6">Your Tickets</h1>
                         
                         <div class="space-y-6">
-                            @foreach($concerts as $index => $item)
+                            @foreach($events as $index => $item)
                                 <div class="border border-gray-200 rounded-lg p-6">
                                     <div class="flex flex-col md:flex-row gap-4">
                                         <!-- Concert Image -->
                                         <div class="md:w-24 md:h-24 flex-shrink-0">
-                                            @if($item['concert']->image_url)
-                                                <img src="{{ $item['concert']->image_url }}" alt="{{ $item['concert']->title }}" class="w-full h-full object-cover rounded-lg">
+                                            @if($item['event']->image_url)
+                                                <img src="{{ $item['event']->image_url }}" alt="{{ $item['event']->title }}" class="w-full h-full object-cover rounded-lg">
                                             @else
                                                 <div class="w-full h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
                                                     <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -56,21 +56,21 @@
 
                                         <!-- Concert Details -->
                                         <div class="flex-1">
-                                            <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ $item['concert']->title ?? 'Concert Title' }}</h3>
-                                            <p class="text-purple-600 font-medium mb-2">{{ $item['concert']->artist ?? 'Artist Name' }}</p>
+                                            <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ $item['event']->title ?? 'Concert Title' }}</h3>
+                                            <p class="text-purple-600 font-medium mb-2">{{ $item['event']->artist ?? 'Artist Name' }}</p>
                                             <div class="space-y-1 text-sm text-gray-600">
                                                 <div class="flex items-center">
                                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                                     </svg>
-                                                    <span>{{ $item['concert']->venue ?? 'Venue' }}, {{ $item['concert']->city ?? 'City' }}</span>
+                                                    <span>{{ $item['event']->venue ?? 'Venue' }}, {{ $item['event']->city ?? 'City' }}</span>
                                                 </div>
                                                 <div class="flex items-center">
                                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                                     </svg>
-                                                    <span>{{ $item['concert']->event_date ? $item['concert']->event_date->format('M j, Y') : 'Date TBD' }} at {{ $item['concert']->event_time ? $item['concert']->event_time->format('g:i A') : 'Time TBD' }}</span>
+                                                    <span>{{ $item['event']->event_date ? $item['event']->event_date->format('M j, Y') : 'Date TBD' }} at {{ $item['event']->event_time ? $item['event']->event_time->format('g:i A') : 'Time TBD' }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -97,7 +97,7 @@
 
                                     <!-- Remove Button -->
                                     <div class="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center">
-                                        <a href="{{ route('public.concerts.show', $item['concert']) }}" 
+                                        <a href="{{ route('public.events.show', $item['event']) }}" 
                                            class="text-purple-600 hover:text-purple-700 font-medium">
                                             View Event Details
                                         </a>
@@ -117,7 +117,7 @@
 
                         <!-- Continue Shopping -->
                         <div class="mt-6 pt-6 border-t border-gray-200">
-                            <a href="{{ route('public.concerts.index') }}" 
+                            <a href="{{ route('public.events.index') }}" 
                                class="inline-flex items-center text-purple-600 hover:text-purple-700 font-medium">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -136,18 +136,18 @@
                         <div class="space-y-3 mb-4">
                             <div class="flex items-center justify-between">
                                 <span class="text-gray-600">Tickets Subtotal</span>
-                                <span class="font-semibold text-gray-900">${{ number_format($total, 2) }}</span>
+                                <span class="font-semibold text-gray-900">KSH {{ number_format($total, 2) }}</span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <span class="text-gray-600">Processing Fee</span>
-                                <span class="text-gray-600">$2.50</span>
+                                <span class="text-gray-600">KSH 2.50</span>
                             </div>
                         </div>
 
                         <div class="border-t border-gray-200 pt-4 mb-6">
                             <div class="flex items-center justify-between text-lg font-bold">
                                 <span>Total</span>
-                                <span class="text-purple-600">${{ number_format($total + 2.50, 2) }}</span>
+                                <span class="text-purple-600">KSH {{ number_format($total + 2.50, 2) }}</span>
                             </div>
                         </div>
 
@@ -181,13 +181,13 @@
                 </div>
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">Your cart is empty</h2>
                 <p class="text-gray-600 mb-8 max-w-md mx-auto">
-                    Looks like you haven't added any concert tickets to your cart yet. 
+                    Looks like you haven't added any event tickets to your cart yet. 
                     Start exploring amazing concerts and add some tickets!
                 </p>
                 <div class="space-y-4">
-                    <a href="{{ route('public.concerts.index') }}" 
+                    <a href="{{ route('public.events.index') }}" 
                        class="inline-block bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
-                        Browse Concerts
+                        Browse Events
                     </a>
                     <div>
                         <a href="{{ route('public.home') }}" class="text-purple-600 hover:text-purple-700 font-medium">

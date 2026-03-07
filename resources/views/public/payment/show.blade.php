@@ -150,7 +150,7 @@
                                     <div class="space-y-2 text-sm text-gray-600 mb-4">
                                         <div class="flex justify-between">
                                             <span>Amount:</span>
-                                            <span class="font-semibold">$<span id="bank-transfer-amount">{{ number_format($booking->total_amount, 2) }}</span></span>
+                                            <span class="font-semibold">KSH <span id="bank-transfer-amount">{{ number_format($booking->total_amount, 2) }}</span></span>
                                         </div>
                                         <div class="flex justify-between">
                                             <span>Reference:</span>
@@ -203,10 +203,10 @@
                                         <div>
                                             <label for="topup_amount" class="block text-sm font-medium text-gray-700 mb-1">Top-up Amount</label>
                                             <select id="topup_amount" name="topup_amount" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                                <option value="50">$50</option>
-                                                <option value="100">$100</option>
-                                                <option value="200">$200</option>
-                                                <option value="500">$500</option>
+                                                <option value="50">KSH 50</option>
+                                                <option value="100">KSH 100</option>
+                                                <option value="200">KSH 200</option>
+                                                <option value="500">KSH 500</option>
                                                 <option value="custom">Custom Amount</option>
                                             </select>
                                         </div>
@@ -218,7 +218,7 @@
                                     
                                     <div class="bg-blue-50 border border-blue-200 rounded p-3 mb-4">
                                         <div class="text-sm text-blue-800">
-                                            <strong>Current Wallet Balance:</strong> $<span id="wallet-balance">0.00</span>
+                                            <strong>Current Wallet Balance:</strong> KSH <span id="wallet-balance">0.00</span>
                                         </div>
                                     </div>
                                     
@@ -262,12 +262,20 @@
                                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
                                         </div>
                                         <div>
+                                            <label for="mpesa_till" class="block text-sm font-medium text-gray-700 mb-1">Pay to Till Number (Optional)</label>
+                                            <input type="text" 
+                                                   id="mpesa_till" 
+                                                   name="mpesa_till" 
+                                                   placeholder="Enter till number if paying directly"
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                        </div>
+                                        <div>
                                             <label for="mpesa_amount" class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
                                             <input type="text" 
                                                    id="mpesa_amount" 
                                                    name="mpesa_amount" 
                                                    readonly
-                                                   value="${{ number_format($booking->total_amount, 2) }}"
+                                                   value="KSH {{ number_format($booking->total_amount, 2) }}"
                                                    class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600">
                                         </div>
                                     </div>
@@ -359,7 +367,7 @@
                                     id="submit-payment"
                                     class="bg-purple-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
                                 <i class="fas fa-lock mr-2"></i>
-                                <span id="submit-text">Pay $<span id="total-amount">{{ number_format($booking->total_amount, 2) }}</span></span>
+                                <span id="submit-text">Pay KSH <span id="total-amount">{{ number_format($booking->total_amount, 2) }}</span></span>
                             </button>
                         </div>
                     </form>
@@ -385,7 +393,7 @@
                                     <div class="text-sm text-gray-500">Qty: {{ $item->quantity }}</div>
                                 </div>
                                 <div class="text-right">
-                                    <div class="font-medium text-gray-900">${{ number_format($item->total_price, 2) }}</div>
+                                    <div class="font-medium text-gray-900">KSH {{ number_format($item->total_price, 2) }}</div>
                                 </div>
                             </div>
                         @endforeach
@@ -394,15 +402,15 @@
                     <div class="border-t pt-4">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-gray-600">Subtotal:</span>
-                            <span class="font-medium">${{ number_format($booking->total_amount, 2) }}</span>
+                            <span class="font-medium">KSH {{ number_format($booking->total_amount, 2) }}</span>
                         </div>
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-gray-600">Processing Fee:</span>
-                            <span class="font-medium" id="processing-fee">$0.00</span>
+                            <span class="font-medium" id="processing-fee">KSH 0.00</span>
                         </div>
                         <div class="flex justify-between items-center text-lg font-bold">
                             <span>Total:</span>
-                            <span id="final-total">${{ number_format($booking->total_amount, 2) }}</span>
+                            <span id="final-total">KSH {{ number_format($booking->total_amount, 2) }}</span>
                         </div>
                     </div>
 
@@ -461,33 +469,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 paypalForm.classList.add('hidden');
                 bankTransferForm.classList.add('hidden');
                 walletTopupForm.classList.add('hidden');
-                submitTextElement.innerHTML = 'Pay $<span id="total-amount">' + {{ $booking->total_amount }} + '</span>';
+                submitTextElement.innerHTML = 'Pay KSH <span id="total-amount">' + {{ $booking->total_amount }} + '</span>';
             } else if (method === 'paypal') {
                 creditCardForm.classList.add('hidden');
                 paypalForm.classList.remove('hidden');
                 bankTransferForm.classList.add('hidden');
                 walletTopupForm.classList.add('hidden');
-                submitTextElement.innerHTML = 'Pay with PayPal - $<span id="total-amount">' + {{ $booking->total_amount }} + '</span>';
+                submitTextElement.innerHTML = 'Pay with PayPal - KSH <span id="total-amount">' + {{ $booking->total_amount }} + '</span>';
             } else if (method === 'bank_transfer') {
                 creditCardForm.classList.add('hidden');
                 paypalForm.classList.add('hidden');
                 bankTransferForm.classList.remove('hidden');
                 walletTopupForm.classList.add('hidden');
-                submitTextElement.innerHTML = 'Confirm Bank Transfer - $<span id="total-amount">' + {{ $booking->total_amount }} + '</span>';
+                submitTextElement.innerHTML = 'Confirm Bank Transfer - KSH <span id="total-amount">' + {{ $booking->total_amount }} + '</span>';
             } else if (method === 'wallet_topup') {
                 creditCardForm.classList.add('hidden');
                 paypalForm.classList.add('hidden');
                 bankTransferForm.classList.add('hidden');
                 walletTopupForm.classList.remove('hidden');
                 mpesaForm.classList.add('hidden');
-                submitTextElement.innerHTML = 'Top-up Wallet - $<span id="total-amount">' + {{ $booking->total_amount }} + '</span>';
+                submitTextElement.innerHTML = 'Top-up Wallet - KSH <span id="total-amount">' + {{ $booking->total_amount }} + '</span>';
             } else if (method === 'mpesa') {
                 creditCardForm.classList.add('hidden');
                 paypalForm.classList.add('hidden');
                 bankTransferForm.classList.add('hidden');
                 walletTopupForm.classList.add('hidden');
                 mpesaForm.classList.remove('hidden');
-                submitTextElement.innerHTML = 'Pay with M-Pesa - $<span id="total-amount">' + {{ $booking->total_amount }} + '</span>';
+                submitTextElement.innerHTML = 'Pay with M-Pesa - KSH <span id="total-amount">' + {{ $booking->total_amount }} + '</span>';
             }
             
             // Calculate fees
@@ -577,7 +585,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (topupAmount === 'custom' && parseFloat(customAmount) < 10) {
                 document.getElementById('custom_amount').classList.add('border-red-500');
                 isValid = false;
-                errorMessage = 'Minimum top-up amount is $10.';
+                errorMessage = 'Minimum top-up amount is KSH 10.';
             } else {
                 document.getElementById('custom_amount').classList.remove('border-red-500');
             }
@@ -675,8 +683,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (amount > 0) {
                 // Update the total amount for wallet top-up
                 totalAmountElement.textContent = amount.toFixed(2);
-                finalTotalElement.textContent = '$' + amount.toFixed(2);
-                processingFeeElement.textContent = '$0.00';
+                finalTotalElement.textContent = 'KSH ' + amount.toFixed(2);
+                processingFeeElement.textContent = 'KSH 0.00';
             }
         });
     }

@@ -13,11 +13,16 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        Admin::create([
-            'name' => 'Admin User',
-            'email' => 'admin@concerthub.com',
-            'password' => Hash::make('password'),
-            'is_active' => true,
-        ]);
+        // Check if admin user already exists
+        $existingAdmin = \App\Models\Admin::where('email', 'admin@concerthub.com')->first();
+        
+        if (!$existingAdmin) {
+            Admin::create([
+                'name' => 'Admin User',
+                'email' => 'admin@concerthub.com',
+                'password' => Hash::make('password'),
+                'is_active' => true,
+            ]);
+        }
     }
 }

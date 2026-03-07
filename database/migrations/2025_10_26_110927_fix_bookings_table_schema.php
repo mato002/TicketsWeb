@@ -22,6 +22,11 @@ return new class extends Migration
                 $table->dropColumn(['concert_id', 'ticket_quantity', 'ticket_price', 'ticket_categories']);
             }
             
+            // Add event_id column if it doesn't exist
+            if (!Schema::hasColumn('bookings', 'event_id')) {
+                $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
+            }
+            
             // Add missing columns that model expects
             if (!Schema::hasColumn('bookings', 'payment_method')) {
                 $table->string('payment_method')->nullable()->after('status');

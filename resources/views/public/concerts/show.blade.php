@@ -126,7 +126,7 @@
                                             @endif
                                         </div>
                                         <div class="text-right">
-                                            <p class="text-2xl font-bold text-purple-600">${{ number_format($details['price'] ?? $concert->base_price, 2) }}</p>
+                                            <p class="text-2xl font-bold text-purple-600">KSH {{ number_format($details['price'] ?? $concert->base_price, 2) }}</p>
                                             <p class="text-sm text-gray-600">per ticket</p>
                                         </div>
                                     </div>
@@ -240,7 +240,7 @@
                         <h3 class="text-xl font-semibold text-gray-900 mb-4">Similar Concerts</h3>
                         <div class="space-y-4">
                             @foreach($similarConcerts as $similar)
-                                <a href="{{ route('public.concerts.show', $similar) }}" class="block border border-gray-200 rounded-lg p-3 hover:border-purple-300 transition-colors">
+                                <a href="{{ route('public.events.show', $similar) }}" class="block border border-gray-200 rounded-lg p-3 hover:border-purple-300 transition-colors">
                                     <h4 class="font-semibold text-gray-900 text-sm">{{ $similar->title }}</h4>
                                     <p class="text-gray-600 text-xs">{{ $similar->artist }}</p>
                                     <p class="text-gray-600 text-xs">{{ $similar->event_date->format('M j, Y') }}</p>

@@ -27,7 +27,7 @@ class AccommodationSeeder extends Seeder
                 'phone' => '+1-212-555-0100',
                 'email' => 'info@grandplazanyc.com',
                 'website' => 'https://www.grandplazanyc.com',
-                'price_per_night' => 299.99,
+                'price_per_night' => 29999.00,
                 'max_guests' => 4,
                 'amenities' => ['WiFi', 'Pool', 'Gym', 'Restaurant', 'Bar', 'Room Service', 'Parking', 'Air Conditioning'],
                 'images' => [
@@ -52,7 +52,7 @@ class AccommodationSeeder extends Seeder
                 'phone' => '+1-212-555-0200',
                 'email' => 'reservations@downtownboutique.com',
                 'website' => 'https://www.downtownboutique.com',
-                'price_per_night' => 189.99,
+                'price_per_night' => 18999.00,
                 'max_guests' => 2,
                 'amenities' => ['WiFi', 'Breakfast Included', 'Concierge', 'Air Conditioning', 'Mini Bar'],
                 'images' => [
@@ -77,7 +77,7 @@ class AccommodationSeeder extends Seeder
                 'phone' => '+1-212-555-0300',
                 'email' => 'booking@citycentersuites.com',
                 'website' => 'https://www.citycentersuites.com',
-                'price_per_night' => 249.99,
+                'price_per_night' => 24999.00,
                 'max_guests' => 6,
                 'amenities' => ['WiFi', 'Kitchen', 'Washer/Dryer', 'Parking', 'Workspace', 'Air Conditioning'],
                 'images' => [
@@ -102,7 +102,7 @@ class AccommodationSeeder extends Seeder
                 'phone' => '+1-323-555-0100',
                 'email' => 'info@hollywoodstarhotel.com',
                 'website' => 'https://www.hollywoodstarhotel.com',
-                'price_per_night' => 219.99,
+                'price_per_night' => 21999.00,
                 'max_guests' => 3,
                 'amenities' => ['WiFi', 'Pool', 'Valet Parking', 'Restaurant', 'Bar', 'Spa', 'Air Conditioning'],
                 'images' => [
@@ -127,7 +127,7 @@ class AccommodationSeeder extends Seeder
                 'phone' => '+1-323-555-0400',
                 'email' => 'stay@sunsetblvdhostel.com',
                 'website' => 'https://www.sunsetblvdhostel.com',
-                'price_per_night' => 59.99,
+                'price_per_night' => 5999.00,
                 'max_guests' => 2,
                 'amenities' => ['WiFi', 'Shared Kitchen', 'Common Room', 'Lockers', 'Air Conditioning'],
                 'images' => [
@@ -152,7 +152,7 @@ class AccommodationSeeder extends Seeder
                 'phone' => '+1-310-555-0100',
                 'email' => 'reservations@marinabayresort.com',
                 'website' => 'https://www.marinabayresort.com',
-                'price_per_night' => 349.99,
+                'price_per_night' => 34999.00,
                 'max_guests' => 4,
                 'amenities' => ['WiFi', 'Pool', 'Beach Access', 'Spa', 'Restaurant', 'Bar', 'Gym', 'Parking', 'Air Conditioning'],
                 'images' => [
@@ -177,7 +177,7 @@ class AccommodationSeeder extends Seeder
                 'phone' => '+44-20-7946-0100',
                 'email' => 'info@londonmusichotel.co.uk',
                 'website' => 'https://www.londonmusichotel.co.uk',
-                'price_per_night' => 179.99,
+                'price_per_night' => 17999.00,
                 'max_guests' => 2,
                 'amenities' => ['WiFi', 'Bar', 'Restaurant', 'Concierge', 'Air Conditioning', 'Music Library'],
                 'images' => [
@@ -202,7 +202,7 @@ class AccommodationSeeder extends Seeder
                 'phone' => '+1-305-555-0100',
                 'email' => 'info@southbeachdeco.com',
                 'website' => 'https://www.southbeachdeco.com',
-                'price_per_night' => 279.99,
+                'price_per_night' => 27999.00,
                 'max_guests' => 3,
                 'amenities' => ['WiFi', 'Pool', 'Beach Access', 'Restaurant', 'Bar', 'Valet Parking', 'Air Conditioning'],
                 'images' => [
@@ -227,7 +227,7 @@ class AccommodationSeeder extends Seeder
                 'phone' => '+1-512-555-0100',
                 'email' => 'stay@austinlivelofts.com',
                 'website' => 'https://www.austinlivelofts.com',
-                'price_per_night' => 169.99,
+                'price_per_night' => 16999.00,
                 'max_guests' => 4,
                 'amenities' => ['WiFi', 'Kitchen', 'Parking', 'Soundproof', 'Workspace', 'Air Conditioning'],
                 'images' => [
@@ -252,7 +252,7 @@ class AccommodationSeeder extends Seeder
                 'phone' => '+1-615-555-0100',
                 'email' => 'info@musicrowinn.com',
                 'website' => 'https://www.musicrowinn.com',
-                'price_per_night' => 149.99,
+                'price_per_night' => 14999.00,
                 'max_guests' => 2,
                 'amenities' => ['WiFi', 'Breakfast Included', 'Parking', 'Historic Building', 'Air Conditioning'],
                 'images' => [
@@ -277,7 +277,7 @@ class AccommodationSeeder extends Seeder
                 'phone' => '+1-312-555-0100',
                 'email' => 'reservations@chicagoblueshotel.com',
                 'website' => 'https://www.chicagoblueshotel.com',
-                'price_per_night' => 229.99,
+                'price_per_night' => 22999.00,
                 'max_guests' => 3,
                 'amenities' => ['WiFi', 'Restaurant', 'Bar', 'Live Music', 'Gym', 'Valet Parking', 'Air Conditioning'],
                 'images' => [
@@ -302,7 +302,7 @@ class AccommodationSeeder extends Seeder
                 'phone' => '+1-206-555-0100',
                 'email' => 'info@seattlegrungeapts.com',
                 'website' => 'https://www.seattlegrungeapts.com',
-                'price_per_night' => 139.99,
+                'price_per_night' => 13999.00,
                 'max_guests' => 4,
                 'amenities' => ['WiFi', 'Kitchen', 'Washer/Dryer', 'Parking', 'Pet Friendly', 'Air Conditioning'],
                 'images' => [

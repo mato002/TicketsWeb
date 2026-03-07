@@ -10,11 +10,10 @@
     </h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group me-2">
-            <a href="{{ route('admin.concerts.show', $concert) }}" class="btn btn-sm btn-outline-info">
-                <i class="fas fa-eye me-1"></i>
+<a href="{{ route('admin.events.show', $concert->id) }}" class="btn btn-sm btn-outline-info">                <i class="fas fa-eye me-1"></i>
                 View
             </a>
-            <a href="{{ route('admin.concerts.index') }}" class="btn btn-sm btn-outline-secondary">
+            <a href="{{ route('admin.events.index') }}" class="btn btn-sm btn-outline-secondary">
                 <i class="fas fa-arrow-left me-1"></i>
                 Back to Concerts
             </a>
@@ -34,7 +33,7 @@
     </div>
 @endif
 
-<form action="{{ route('admin.concerts.update', $concert) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('admin.events.update', $concert) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     
@@ -403,11 +402,11 @@
                             <i class="fas fa-save me-2"></i>
                             Update Concert
                         </button>
-                        <a href="{{ route('admin.concerts.show', $concert) }}" class="btn btn-outline-info">
+                        <a href="{{ route('admin.events.show', $concert) }}" class="btn btn-outline-info">
                             <i class="fas fa-eye me-2"></i>
                             View Concert
                         </a>
-                        <a href="{{ route('admin.concerts.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('admin.events.index') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-times me-2"></i>
                             Cancel
                         </a>

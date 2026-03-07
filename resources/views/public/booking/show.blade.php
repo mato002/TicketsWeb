@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
-@section('title', 'Book Tickets - ' . $concert->title)
-@section('description', 'Book your tickets for ' . $concert->title . ' by ' . $concert->artist . ' on ' . $concert->event_date->format('M j, Y') . '.')
+@section('title', 'Book Tickets - ' . $event->title)
+@section('description', 'Book your tickets for ' . $event->title . ' by ' . $event->artist . ' on ' . $event->event_date->format('M j, Y') . '.')
 
 @section('content')
 <div class="bg-gray-50 min-h-screen py-8">
@@ -32,8 +32,8 @@
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <!-- Concert Info Header -->
                     <div class="flex items-center space-x-4 mb-6 pb-6 border-b border-gray-200">
-                        @if($concert->image_url)
-                            <img src="{{ $concert->image_url }}" alt="{{ $concert->title }}" class="w-16 h-16 object-cover rounded-lg">
+                        @if($event->image_url)
+                            <img src="{{ $event->image_url }}" alt="{{ $event->title }}" class="w-16 h-16 object-cover rounded-lg">
                         @else
                             <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
                                 <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -42,9 +42,9 @@
                             </div>
                         @endif
                         <div>
-                            <h1 class="text-xl font-bold text-gray-900">{{ $concert->title }}</h1>
-                            <p class="text-purple-600 font-semibold">{{ $concert->artist }}</p>
-                            <p class="text-gray-600 text-sm">{{ $concert->event_date->format('M j, Y') }} at {{ $concert->event_time->format('g:i A') }}</p>
+                            <h1 class="text-xl font-bold text-gray-900">{{ $event->title }}</h1>
+                            <p class="text-purple-600 font-semibold">{{ $event->artist }}</p>
+                            <p class="text-gray-600 text-sm">{{ $event->event_date->format('M j, Y') }} at {{ $event->event_time->format('g:i A') }}</p>
                         </div>
                     </div>
 
@@ -90,13 +90,13 @@
                     <!-- Ticket Selection Form -->
                     <form action="{{ route('cart.add') }}" method="POST" id="bookingForm">
                         @csrf
-                        <input type="hidden" name="concert_id" value="{{ $concert->id }}">
+                        <input type="hidden" name="event_id" value="{{ $event->id }}">
                         
                         <h2 class="text-lg font-semibold text-gray-900 mb-4">Select Your Tickets</h2>
                         
-                        @if($concert->ticket_categories && count($concert->ticket_categories) > 0)
+                        @if($event->ticket_categories && count($event->ticket_categories) > 0)
                             <div class="space-y-4 mb-6">
-                                @foreach($concert->ticket_categories as $category => $details)
+                                @foreach($event->ticket_categories as $category => $details)
                                     <div class="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition-colors">
                                         <div class="flex items-center justify-between mb-3">
                                             <div>
@@ -106,7 +106,7 @@
                                                 @endif
                                             </div>
                                             <div class="text-right">
-                                                <p class="text-xl font-bold text-purple-600">${{ number_format($details['price'] ?? $concert->base_price, 2) }}</p>
+                                                <p class="text-xl font-bold text-purple-600">KSH {{ number_format($details['price'] ?? $event->base_price, 2) }}</p>
                                                 <p class="text-sm text-gray-600">per ticket</p>
                                             </div>
                                         </div>
@@ -144,7 +144,7 @@
                                         <p class="text-gray-600 text-sm">Standard ticket for the event</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-xl font-bold text-purple-600">{{ $concert->formatted_price }}</p>
+                                        <p class="text-xl font-bold text-purple-600">{{ $event->formatted_price }}</p>
                                         <p class="text-sm text-gray-600">per ticket</p>
                                     </div>
                                 </div>
@@ -196,15 +196,15 @@
                     <div id="totalSection" class="border-t border-gray-200 pt-4 hidden">
                         <div class="flex items-center justify-between mb-2">
                             <span class="font-semibold text-gray-900">Subtotal:</span>
-                            <span class="font-semibold text-gray-900" id="subtotal">$0.00</span>
+                            <span class="font-semibold text-gray-900" id="subtotal">KSH 0.00</span>
                         </div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-gray-600">Processing Fee:</span>
-                            <span class="text-gray-600" id="processingFee">$2.50</span>
+                            <span class="text-gray-600" id="processingFee">KSH 2.50</span>
                         </div>
                         <div class="flex items-center justify-between text-lg font-bold border-t border-gray-200 pt-2">
                             <span>Total:</span>
-                            <span id="total">$2.50</span>
+                            <span id="total">KSH 2.50</span>
                         </div>
                     </div>
 
@@ -221,7 +221,7 @@
 
 @push('scripts')
 <script>
-    let ticketPrices = @json($concert->ticket_categories ?? ['general' => ['price' => $concert->base_price]]);
+    let ticketPrices = @json($event->ticket_categories ?? ['general' => ['price' => $event->base_price]]);
     
     function updateOrderSummary() {
         const summaryDiv = document.getElementById('orderSummary');
@@ -261,17 +261,17 @@
                     itemDiv.innerHTML = `
                         <div>
                             <p class="text-sm font-medium">${categoryName}</p>
-                            <p class="text-xs text-gray-600">${quantity} × $${price.toFixed(2)}</p>
+                            <p class="text-xs text-gray-600">${quantity} × KSH ${price.toFixed(2)}</p>
                         </div>
-                        <span class="font-semibold">$${(price * quantity).toFixed(2)}</span>
+                        <span class="font-semibold">KSH ${(price * quantity).toFixed(2)}</span>
                     `;
                     summaryDiv.appendChild(itemDiv);
                 }
             });
             
             totalSection.classList.remove('hidden');
-            subtotalSpan.textContent = `$${subtotal.toFixed(2)}`;
-            totalSpan.textContent = `$${(subtotal + 2.50).toFixed(2)}`;
+            subtotalSpan.textContent = `KSH ${subtotal.toFixed(2)}`;
+            totalSpan.textContent = `KSH ${(subtotal + 2.50).toFixed(2)}`;
         } else {
             document.getElementById('addToCartBtn').disabled = true;
             totalSection.classList.add('hidden');

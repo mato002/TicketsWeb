@@ -9,7 +9,7 @@
         Create New Concert
     </h1>
     <div class="btn-toolbar mb-2 mb-md-0">
-        <a href="{{ route('admin.concerts.index') }}" class="btn btn-sm btn-outline-secondary">
+        <a href="{{ route('admin.events.index') }}" class="btn btn-sm btn-outline-secondary">
             <i class="fas fa-arrow-left me-1"></i>
             Back to Concerts
         </a>
@@ -28,7 +28,7 @@
     </div>
 @endif
 
-<form action="{{ route('admin.concerts.store') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     
     <div class="row">
@@ -349,7 +349,7 @@
                             <i class="fas fa-save me-2"></i>
                             Create Concert
                         </button>
-                        <a href="{{ route('admin.concerts.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('admin.events.index') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-times me-2"></i>
                             Cancel
                         </a>

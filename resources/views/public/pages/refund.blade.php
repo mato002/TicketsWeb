@@ -1,53 +1,115 @@
 @extends('layouts.public')
 
-@section('title', 'Refund Policy - ConcertHub')
-@section('description', 'Learn about our refund and cancellation policies for concert tickets and accommodations.')
+@section('title', 'Refund Policy - TwendeeTickets')
 
 @section('content')
-<div class="bg-gradient-to-r from-purple-600 to-blue-600 py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center">
-            <h1 class="text-4xl font-bold text-white mb-4">Refund Policy</h1>
-            <p class="text-xl text-purple-100">Last updated: {{ date('F d, Y') }}</p>
+<div class="bg-gray-50 min-h-screen">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">Refund Policy</h1>
+                <p class="text-xl md:text-2xl text-purple-100">Fair, transparent, and customer-friendly refund terms</p>
+            </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="bg-white rounded-lg shadow-md p-8 prose prose-lg max-w-none">
-        
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Overview</h2>
-            <p class="text-gray-600 mb-4">
-                At ConcertHub, we understand that plans can change. This Refund Policy outlines the conditions under which refunds are available for concert tickets and accommodation bookings made through our platform.
-            </p>
-        </section>
+    <!-- Trust Badge -->
+    <section class="py-12 bg-green-50 border-b border-green-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="inline-flex items-center bg-green-100 rounded-full px-6 py-3 mb-4">
+                    <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="text-green-800 font-semibold">100% Refund Guarantee • No Hidden Fees • Transparent Process</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">2. Concert Ticket Refunds</h2>
+    <!-- Refund Policy Content -->
+    <section class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">2.1 Event Cancellation</h3>
-            <p class="text-gray-600 mb-4">
-                If an event is canceled by the organizer:
-            </p>
-            <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                <li>Full refund of the ticket price</li>
-                <li>Refund of all service fees</li>
-                <li>Refund processed within 7-10 business days</li>
-                <li>Automatic notification via email</li>
-                <li>Original payment method will be credited</li>
-            </ul>
+            <!-- Quick Summary -->
+            <div class="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-12">
+                <h2 class="text-2xl font-bold text-purple-900 mb-4">Quick Refund Summary</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-600 mb-2">100%</div>
+                        <div class="text-sm text-purple-800">Refund for event cancellation</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-600 mb-2">100%</div>
+                        <div class="text-sm text-purple-800">Refund if cancelled 48+ hours before</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-purple-600 mb-2">50%</div>
+                        <div class="text-sm text-purple-800">Refund if cancelled 24-48 hours before</div>
+                    </div>
+                </div>
+            </div>
 
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">2.2 Event Postponement or Rescheduling</h3>
-            <p class="text-gray-600 mb-4">
-                If an event is postponed or rescheduled:
-            </p>
-            <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                <li>Your tickets remain valid for the new date</li>
-                <li>If unable to attend the new date, you may request a refund within 14 days of the announcement</li>
-                <li>Refunds for rescheduled events are subject to a 10% processing fee</li>
-                <li>You may also choose to receive event credit instead of a refund</li>
-            </ul>
+            <!-- Detailed Policy -->
+            <div class="space-y-8">
+                <!-- Full Refund Eligibility -->
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                        <svg class="w-6 h-6 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        Full Refund (100%)
+                    </h3>
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <p class="text-gray-700 mb-3">You're eligible for a 100% refund if:</p>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>The event is cancelled by the organizer</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>You cancel at least 48 hours before the event</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>The event is postponed and you cannot attend the new date</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Duplicate ticket purchase (verified)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Contact for Refunds -->
+                <div class="text-center bg-purple-100 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-purple-900 mb-3">Need Help with Refunds?</h3>
+                    <p class="text-gray-700 mb-4">Our support team is here to assist you with any refund questions</p>
+                    <div class="flex justify-center space-x-4">
+                        <a href="tel:+254700123456" class="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                            Call Support
+                        </a>
+                        <a href="mailto:support@twendeetickets.co.ke" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                            Email Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@endsection
 
             <h3 class="text-xl font-semibold text-gray-800 mb-3">2.3 Customer-Initiated Cancellations</h3>
             <p class="text-gray-600 mb-4">

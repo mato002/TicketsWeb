@@ -16,9 +16,9 @@
             </button>
         </div>
         <div class="btn-group me-2">
-            <a href="{{ route('admin.concerts.create') }}" class="btn btn-sm btn-primary">
+            <a href="{{ route('admin.events.create') }}" class="btn btn-sm btn-primary">
                 <i class="fas fa-plus me-1"></i>
-                Add Concert
+                Add Event
             </a>
             <a href="{{ route('admin.accommodations.create') }}" class="btn btn-sm btn-success">
                 <i class="fas fa-bed me-1"></i>
@@ -170,17 +170,17 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    <a href="{{ route('admin.concerts.create') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.events.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>
-                        Add New Concert
+                        Add New Event
                     </a>
-                    <a href="{{ route('admin.accommodations.index') }}" class="btn btn-success">
+                    <a href="{{ route('admin.accommodations.create') }}" class="btn btn-info">
                         <i class="fas fa-bed me-2"></i>
                         Manage Accommodations
                     </a>
-                    <a href="{{ route('admin.concerts.index') }}" class="btn btn-info">
+                    <a href="{{ route('admin.events.index') }}" class="btn btn-info">
                         <i class="fas fa-calendar-alt me-2"></i>
-                        View All Concerts
+                        View All Events
                     </a>
                     <a href="{{ route('admin.users.index') }}" class="btn btn-warning">
                         <i class="fas fa-users me-2"></i>

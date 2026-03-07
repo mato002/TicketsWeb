@@ -3,10 +3,17 @@
 namespace App\Services;
 
 use App\Models\Booking;
+use App\Services\MpesaService;
 use Illuminate\Support\Facades\Log;
 
 class PaymentService
 {
+    protected $mpesaService;
+    
+    public function __construct(MpesaService $mpesaService)
+    {
+        $this->mpesaService = $mpesaService;
+    }
     /**
      * Process payment for a booking
      */
@@ -16,9 +23,8 @@ class PaymentService
             // Validate payment data
             $this->validatePaymentData($paymentData);
             
-            // For now, we'll simulate payment processing
-            // In a real implementation, you would integrate with Stripe, PayPal, etc.
-            $paymentResult = $this->simulatePayment($booking, $paymentData);
+            // Process payment based on method
+            $paymentResult = $this->processRealPayment($booking, $paymentData);
             
             if ($paymentResult['success']) {
                 // Update booking with payment information
@@ -26,18 +32,20 @@ class PaymentService
                     'payment_method' => $paymentData['payment_method'],
                     'status' => 'confirmed',
                     'confirmed_at' => now(),
+                    'transaction_id' => $paymentResult['transaction_id'] ?? null,
                 ]);
                 
                 Log::info('Payment processed successfully', [
                     'booking_id' => $booking->id,
                     'amount' => $booking->total_amount,
-                    'payment_method' => $paymentData['payment_method']
+                    'payment_method' => $paymentData['payment_method'],
+                    'transaction_id' => $paymentResult['transaction_id'] ?? null
                 ]);
                 
                 return [
                     'success' => true,
                     'message' => 'Payment processed successfully',
-                    'transaction_id' => $paymentResult['transaction_id']
+                    'transaction_id' => $paymentResult['transaction_id'] ?? null
                 ];
             } else {
                 return [
@@ -57,6 +65,92 @@ class PaymentService
                 'message' => 'Payment processing failed. Please try again.'
             ];
         }
+    }
+    
+    /**
+     * Process real payment based on method
+     */
+    private function processRealPayment(Booking $booking, array $paymentData)
+    {
+        switch ($paymentData['payment_method']) {
+            case 'mpesa':
+                return $this->processMpesaPayment($booking, $paymentData);
+            case 'credit_card':
+                return $this->processStripePayment($booking, $paymentData);
+            case 'paypal':
+                return $this->processPaypalPayment($booking, $paymentData);
+            case 'bank_transfer':
+                return $this->processBankTransfer($booking, $paymentData);
+            case 'wallet_topup':
+                return $this->processWalletTopup($booking, $paymentData);
+            default:
+                return [
+                    'success' => false,
+                    'message' => 'Payment method not supported'
+                ];
+        }
+    }
+    
+    /**
+     * Process M-Pesa payment
+     */
+    private function processMpesaPayment(Booking $booking, array $paymentData)
+    {
+        $phoneNumber = $paymentData['mpesa_phone'];
+        $amount = $booking->total_amount;
+        $accountReference = 'TWENDEE-' . $booking->booking_reference;
+        
+        // Validate phone number
+        $validPhone = $this->mpesaService->validateMpesaPhone($phoneNumber);
+        if (!$validPhone) {
+            return [
+                'success' => false,
+                'message' => 'Invalid M-Pesa phone number. Please use a valid Kenyan number.'
+            ];
+        }
+        
+        // Use till number if available, otherwise use STK push
+        if (env('MPESA_TILL_NUMBER')) {
+            return $this->mpesaService->processTillPayment($validPhone, $amount, $accountReference);
+        } else {
+            return $this->mpesaService->initiateStkPush($validPhone, $amount, $accountReference);
+        }
+    }
+    
+    /**
+     * Process Stripe payment (placeholder for future implementation)
+     */
+    private function processStripePayment(Booking $booking, array $paymentData)
+    {
+        // TODO: Implement real Stripe integration
+        return $this->simulatePayment($booking, $paymentData);
+    }
+    
+    /**
+     * Process PayPal payment (placeholder for future implementation)
+     */
+    private function processPaypalPayment(Booking $booking, array $paymentData)
+    {
+        // TODO: Implement real PayPal integration
+        return $this->simulatePayment($booking, $paymentData);
+    }
+    
+    /**
+     * Process bank transfer (placeholder)
+     */
+    private function processBankTransfer(Booking $booking, array $paymentData)
+    {
+        // TODO: Implement bank transfer processing
+        return $this->simulatePayment($booking, $paymentData);
+    }
+    
+    /**
+     * Process wallet topup (placeholder)
+     */
+    private function processWalletTopup(Booking $booking, array $paymentData)
+    {
+        // TODO: Implement wallet system
+        return $this->simulatePayment($booking, $paymentData);
     }
     
     /**

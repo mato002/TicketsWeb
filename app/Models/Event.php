@@ -30,7 +30,8 @@ class Event extends Model
         'image_url',
         'status',
         'featured',
-        'ticket_categories'
+        'ticket_categories',
+        'organizer_verified'
     ];
 
     protected $casts = [
@@ -41,6 +42,7 @@ class Event extends Model
         'longitude' => 'decimal:8',
         'ticket_categories' => 'array',
         'featured' => 'boolean',
+        'organizer_verified' => 'boolean',
     ];
 
     // Scopes
@@ -67,7 +69,7 @@ class Event extends Model
     // Accessors
     public function getFormattedPriceAttribute()
     {
-        return '$' . number_format($this->base_price, 2);
+        return 'KSH ' . number_format($this->base_price, 2);
     }
 
     public function getEventDateTimeAttribute()

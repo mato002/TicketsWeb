@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
-@section('title', 'Browse Events - EventHub')
-@section('description', 'Browse through hundreds of upcoming events including sports, music festivals, comedy, car shows, travel, hiking, art, and gallery events. Find your perfect event by type, location, or date.')
+@section('title', 'Browse Events - TwendeeTickets')
+@section('description', 'Browse through hundreds of upcoming events including sports, music festivals, comedy, car shows, travel, hiking, art, and gallery events. Find your perfect event by type, location, or date with TwendeeTickets.')
 
 @section('content')
 <div class="bg-gray-50 min-h-screen" x-data="{ mobileFiltersOpen: false }">
@@ -48,6 +48,21 @@
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Filter Events</h3>
                     
                     <form method="GET" action="{{ route('public.events.index') }}" class="space-y-6">
+                        <!-- Search Bar -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Search Events</label>
+                            <div class="relative">
+                                <input type="text" 
+                                       name="search" 
+                                       value="{{ request('search') }}"
+                                       placeholder="Search by name, venue, or organizer..."
+                                       class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        
                         <!-- Event Type Filter -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Event Type</label>
@@ -58,13 +73,30 @@
                                 @endforeach
                             </select>
                         </div>
-
-                        <!-- Search -->
+                        
+                        <!-- Location Filter -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
-                            <input type="text" name="search" value="{{ request('search') }}" 
-                                   placeholder="Search events..." 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                            <select name="location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option value="all" {{ request('location') == 'all' || !request('location') ? 'selected' : '' }}>All Locations</option>
+                                <option value="nairobi" {{ request('location') == 'nairobi' ? 'selected' : '' }}>Nairobi</option>
+                                <option value="mombasa" {{ request('location') == 'mombasa' ? 'selected' : '' }}>Mombasa</option>
+                                <option value="kisumu" {{ request('location') == 'kisumu' ? 'selected' : '' }}>Kisumu</option>
+                                <option value="nakuru" {{ request('location') == 'nakuru' ? 'selected' : '' }}>Nakuru</option>
+                                <option value="eldoret" {{ request('location') == 'eldoret' ? 'selected' : '' }}>Eldoret</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Date Filter -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+                            <select name="date_range" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                <option value="all" {{ request('date_range') == 'all' || !request('date_range') ? 'selected' : '' }}>All Dates</option>
+                                <option value="today" {{ request('date_range') == 'today' ? 'selected' : '' }}>Today</option>
+                                <option value="this_week" {{ request('date_range') == 'this_week' ? 'selected' : '' }}>This Week</option>
+                                <option value="this_month" {{ request('date_range') == 'this_month' ? 'selected' : '' }}>This Month</option>
+                                <option value="next_month" {{ request('date_range') == 'next_month' ? 'selected' : '' }}>Next Month</option>
+                            </select>
                         </div>
 
                         <!-- Sort -->
@@ -77,22 +109,17 @@
                             </select>
                         </div>
 
-                        <!-- Sort Order -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Order</label>
-                            <select name="order" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Ascending</option>
-                                <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Descending</option>
-                            </select>
+                        <!-- Apply Filters Button -->
+                        <div class="flex gap-3">
+                            <button type="submit" 
+                                    class="flex-1 bg-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                                Apply Filters
+                            </button>
+                            <a href="{{ route('public.events.index') }}" 
+                               class="flex-1 bg-gray-200 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-center">
+                                Clear
+                            </a>
                         </div>
-
-                        <button type="submit" class="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors">
-                            Apply Filters
-                        </button>
-                        
-                        <a href="{{ route('public.events.index') }}" class="block w-full text-center bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors">
-                            Clear Filters
-                        </a>
                     </form>
                     </div>
                 </div>
@@ -127,17 +154,17 @@
 
                 <!-- Events List -->
                 @if($events->count() > 0)
-                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                         @foreach($events as $event)
-                            <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
+                            <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group transform hover:-translate-y-1">
                                 <!-- Event Image -->
-                                <div class="relative h-48 bg-gradient-to-br from-purple-400 to-blue-500 overflow-hidden">
+                                <div class="relative h-64 bg-gradient-to-br from-purple-400 to-blue-500 overflow-hidden">
                                     @if($event->image_url)
                                         <img src="{{ $event->image_url }}" alt="{{ $event->title }}" 
-                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center">
-                                            <svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 20 20">
+                                            <svg class="w-20 h-20 text-white opacity-50" fill="currentColor" viewBox="0 0 20 20">
                                                 <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
                                             </svg>
                                         </div>
@@ -150,8 +177,20 @@
                                         </span>
                                     </div>
                                     
-                                    @if($event->featured)
+                                    <!-- Organizer Verification Badge -->
+                                    @if($event->organizer_verified)
                                         <div class="absolute top-4 right-4">
+                                            <div class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Verified
+                                            </div>
+                                        </div>
+                                    @endif
+                                    
+                                    @if($event->featured)
+                                        <div class="absolute top-12 right-4">
                                             <span class="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-semibold">
                                                 Featured
                                             </span>
@@ -160,29 +199,29 @@
                                 </div>
 
                                 <!-- Event Details -->
-                                <div class="p-6">
-                                    <div class="mb-4">
-                                        <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                                <div class="p-8">
+                                    <div class="mb-6">
+                                        <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
                                             <a href="{{ route('public.events.show', $event) }}" class="hover:text-purple-600 transition-colors">
                                                 {{ $event->title }}
                                             </a>
                                         </h3>
-                                        <p class="text-gray-600 text-sm mb-3 line-clamp-2">
+                                        <p class="text-gray-600 text-base mb-4 line-clamp-3">
                                             {{ $event->description }}
                                         </p>
                                         
-                                        <div class="space-y-2">
+                                        <div class="space-y-3">
                                             <!-- Organizer -->
-                                            <div class="flex items-center text-sm text-gray-600">
-                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <div class="flex items-center text-base text-gray-600">
+                                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                                 </svg>
                                                 {{ $event->organizer }}
                                             </div>
                                             
                                             <!-- Venue -->
-                                            <div class="flex items-center text-sm text-gray-600">
-                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <div class="flex items-center text-base text-gray-600">
+                                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                                 </svg>
@@ -190,23 +229,38 @@
                                             </div>
                                             
                                             <!-- Date & Time -->
-                                            <div class="flex items-center text-sm text-gray-600">
-                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <div class="flex items-center text-base text-gray-600">
+                                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                                 </svg>
                                                 {{ $event->event_date->format('M j, Y') }} at {{ $event->event_time->format('g:i A') }}
                                             </div>
                                         </div>
                                     </div>
-
+                                    
+                                    <!-- Countdown Timer -->
+                                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-6">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <svg class="w-5 h-5 text-orange-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                                </svg>
+                                                <span class="text-sm font-semibold text-orange-800">Sales end in:</span>
+                                            </div>
+                                            <div class="text-sm font-bold text-orange-900" id="countdown-{{ $event->id }}">
+                                                Loading...
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     <!-- Price & Tickets -->
-                                    <div class="flex items-center justify-between pt-4 border-t">
+                                    <div class="flex items-center justify-between pt-6 border-t border-gray-200">
                                         <div>
-                                            <span class="text-2xl font-bold text-purple-600">{{ $event->formatted_price }}</span>
-                                            <p class="text-xs text-gray-500">{{ $event->available_tickets }} tickets left</p>
+                                            <span class="text-3xl font-bold text-purple-600">{{ $event->formatted_price }}</span>
+                                            <p class="text-sm text-gray-500 mt-1">{{ $event->available_tickets }} tickets left</p>
                                         </div>
                                         <a href="{{ route('public.events.show', $event) }}" 
-                                           class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors text-sm font-medium">
+                                           class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-bold text-base transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
                                             View Details
                                         </a>
                                     </div>
@@ -237,4 +291,56 @@
         </div>
     </div>
 </div>
+
+<script>
+// Countdown Timer Function
+function updateCountdowns() {
+    @php
+        $eventsData = [];
+        foreach($events as $event) {
+            $eventsData[$event->id] = [
+                'date' => $event->event_date->format('Y-m-d'),
+                'time' => $event->event_time->format('H:i:s')
+            ];
+        }
+    @endphp
+    
+    const events = @json($eventsData);
+    
+    Object.keys(events).forEach(eventId => {
+        const eventDate = new Date(events[eventId].date + 'T' + events[eventId].time);
+        const now = new Date();
+        const difference = eventDate - now;
+        
+        const element = document.getElementById('countdown-' + eventId);
+        if (!element) return;
+        
+        if (difference > 0) {
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            
+            let countdownText = '';
+            if (days > 0) {
+                countdownText = days + ' day' + (days !== 1 ? 's' : '');
+            } else if (hours > 0) {
+                countdownText = hours + ' hour' + (hours !== 1 ? 's' : '');
+            } else {
+                countdownText = minutes + ' min' + (minutes !== 1 ? 's' : '');
+            }
+            
+            element.textContent = countdownText;
+        } else {
+            element.textContent = 'Sales ended';
+            element.parentElement.parentElement.classList.add('bg-red-50', 'border-red-200');
+            element.classList.remove('text-orange-900');
+            element.classList.add('text-red-900');
+        }
+    });
+}
+
+// Update countdowns immediately and then every minute
+updateCountdowns();
+setInterval(updateCountdowns, 60000);
+</script>
 @endsection

@@ -1,23 +1,93 @@
 @extends('layouts.public')
 
-@section('title', 'Terms of Service - ConcertHub')
-@section('description', 'Read our terms and conditions for using ConcertHub services.')
+@section('title', 'Terms & Conditions - TwendeeTickets')
 
 @section('content')
-<div class="bg-gradient-to-r from-purple-600 to-blue-600 py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center">
-            <h1 class="text-4xl font-bold text-white mb-4">Terms of Service</h1>
-            <p class="text-xl text-purple-100">Last updated: {{ date('F d, Y') }}</p>
+<div class="bg-gray-50 min-h-screen">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">Terms & Conditions</h1>
+                <p class="text-xl md:text-2xl text-purple-100">Our commitment to transparency and fair practices</p>
+            </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="bg-white rounded-lg shadow-md p-8 prose prose-lg max-w-none">
-        
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Acceptance of Terms</h2>
+    <!-- Trust Badge -->
+    <section class="py-12 bg-green-50 border-b border-green-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="inline-flex items-center bg-green-100 rounded-full px-6 py-3 mb-4">
+                    <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="text-green-800 font-semibold">Legal & Transparent • Customer Protection • Clear Terms</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terms Content -->
+    <section class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Agreement -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-blue-900 mb-4">1. Agreement to Terms</h2>
+                <p class="text-gray-700 mb-4">
+                    By accessing and using TwendeeTickets, you agree to be bound by these Terms & Conditions. 
+                    If you disagree with any part of these terms, you may not access our services.
+                </p>
+                <p class="text-gray-700">
+                    <strong>Last Updated:</strong> {{ date('F d, Y') }}<br>
+                    <strong>Effective Date:</strong> January 1, 2024
+                </p>
+            </div>
+
+            <!-- Ticket Authenticity Guarantee -->
+            <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-green-900 mb-4">2. Ticket Authenticity Guarantee</h2>
+                <p class="text-gray-700 mb-4">
+                    <strong class="text-green-700">100% Authenticity Guarantee:</strong> We guarantee all tickets sold on TwendeeTickets are authentic and valid for entry.
+                </p>
+                <ul class="space-y-2 text-gray-600">
+                    <li>• All tickets are sourced directly from event organizers</li>
+                    <li>• We verify every ticket before listing</li>
+                    <li>• Full refund if any ticket is found to be invalid</li>
+                    <li>• 24/7 support for ticket verification issues</li>
+                </ul>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-purple-900 mb-4">3. Contact Information</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h3 class="font-semibold text-purple-800 mb-2">Office Location</h3>
+                        <p class="text-gray-700">
+                            TwendeeTickets Headquarters<br>
+                            Jabavu Building, 2nd Floor<br>
+                            Moi Avenue, Nairobi CBD<br>
+                            P.O. Box 12345-00100, Nairobi
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-purple-800 mb-2">Contact Details</h3>
+                        <p class="text-gray-700">
+                            Phone: +254 700 123 456<br>
+                            Email: support@twendeetickets.co.ke<br>
+                            WhatsApp: +254 712 345 678<br>
+                            Website: www.twendeetickets.co.ke
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+@endsection
             <p class="text-gray-600 mb-4">
                 By accessing and using ConcertHub ("the Service"), you accept and agree to be bound by the terms and provisions of this agreement. If you do not agree to these Terms of Service, please do not use the Service.
             </p>

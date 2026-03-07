@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up()
+    {
+        Schema::table('bookings', function (Blueprint $table) {
+            $table->string('mpesa_receipt')->nullable()->after('payment_method');
+            $table->text('payment_details')->nullable()->after('mpesa_receipt');
+            $table->string('failed_reason')->nullable()->after('payment_details');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down()
+    {
+        Schema::table('bookings', function (Blueprint $table) {
+            $table->dropColumn(['mpesa_receipt', 'payment_details', 'failed_reason']);
+        });
+    }
+};

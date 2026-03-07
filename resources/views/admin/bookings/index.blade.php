@@ -146,7 +146,7 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancel"
-                                                        onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                                        onclick="event.preventDefault(); cancelBooking(this);">
                                                     <i class="fas fa-times"></i>
                                                 </button>
                                             </form>
@@ -156,7 +156,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"
-                                                    onclick="return confirm('Are you sure you want to delete this booking? This action cannot be undone.')">
+                                                    onclick="event.preventDefault(); deleteBooking(this);">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -184,4 +184,40 @@
         @endif
     </div>
 </div>
+
+@push('scripts')
+<script>
+function cancelBooking(form) {
+    Swal.fire({
+        title: 'Cancel Booking?',
+        text: "Are you sure you want to cancel this booking?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#f59e0b',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, cancel it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });
+}
+
+function deleteBooking(form) {
+    Swal.fire({
+        title: 'Delete Booking?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });
+}
+</script>
+@endpush
 @endsection

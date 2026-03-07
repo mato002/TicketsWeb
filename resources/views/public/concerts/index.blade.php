@@ -24,7 +24,7 @@
                 <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Filter Events</h3>
                     
-                    <form method="GET" action="{{ route('public.concerts.index') }}" class="space-y-6">
+                    <form method="GET" action="{{ route('public.events.index') }}" class="space-y-6">
                         <!-- Search by Artist -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Artist</label>
@@ -89,7 +89,7 @@
                             <button type="submit" class="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md font-medium hover:bg-purple-700 transition-colors">
                                 Apply Filters
                             </button>
-                            <a href="{{ route('public.concerts.index') }}" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md font-medium hover:bg-gray-400 transition-colors text-center">
+                            <a href="{{ route('public.events.index') }}" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md font-medium hover:bg-gray-400 transition-colors text-center">
                                 Clear
                             </a>
                         </div>
@@ -176,7 +176,7 @@
                                             <span class="text-2xl font-bold text-purple-600">{{ $concert->formatted_price }}</span>
                                             <span class="text-gray-600 text-sm">from</span>
                                         </div>
-                                        <a href="{{ route('public.concerts.show', $concert) }}" 
+                                        <a href="{{ route('public.events.show', $concert) }}" 
                                            class="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
                                             View Details
                                         </a>
@@ -200,7 +200,7 @@
                         </div>
                 <h3 class="text-xl font-semibold text-gray-900 mb-2">No Events Found</h3>
                 <p class="text-gray-600 mb-6">Try adjusting your search criteria or browse all events.</p>
-                <a href="{{ route('public.concerts.index') }}" 
+                <a href="{{ route('public.events.index') }}" 
                    class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
                     View All Events
                 </a>

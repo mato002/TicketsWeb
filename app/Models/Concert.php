@@ -9,6 +9,8 @@ class Concert extends Model
 {
     use HasFactory;
 
+    protected $table = 'events';
+
     protected $fillable = [
         'title',
         'description',
@@ -61,7 +63,7 @@ class Concert extends Model
     // Accessors
     public function getFormattedPriceAttribute()
     {
-        return '$' . number_format($this->base_price, 2);
+        return 'KSH ' . number_format($this->base_price, 2);
     }
 
     public function getEventDateTimeAttribute()
@@ -85,6 +87,6 @@ class Concert extends Model
      */
     public function bookings()
     {
-        return $this->hasMany(Booking::class);
+        return $this->hasMany(Booking::class, 'event_id');
     }
 }

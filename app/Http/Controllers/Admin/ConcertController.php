@@ -12,7 +12,7 @@ class ConcertController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('admin');
     }
 
     /**
@@ -190,5 +190,71 @@ class ConcertController extends Controller
 
         return redirect()->back()
             ->with('success', 'Concert status updated successfully.');
+    }
+
+    /**
+     * Export concerts to CSV.
+     */
+    public function export(Request $request)
+    {
+        $query = Concert::query();
+
+        // Apply filters
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('event_type')) {
+            $query->where('event_type', $request->event_type);
+        }
+        if ($request->filled('featured')) {
+            $query->where('featured', $request->featured == '1');
+        }
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('title', 'like', '%' . $request->search . '%')
+                  ->orWhere('venue', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $concerts = $query->orderBy('event_date', 'desc')->get();
+
+        $filename = 'concerts_export_' . date('Y-m-d_H-i-s') . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() use ($concerts) {
+            $file = fopen('php://output', 'w');
+            
+            // CSV header
+            fputcsv($file, [
+                'ID', 'Title', 'Event Type', 'Event Date', 'Event Time', 'Venue', 
+                'Base Price', 'Available Tickets', 'Status', 'Featured', 'Created At'
+            ]);
+            
+            // CSV data
+            foreach ($concerts as $concert) {
+                fputcsv($file, [
+                    $concert->id,
+                    $concert->title,
+                    $concert->event_type ?? 'N/A',
+                    $concert->event_date?->format('Y-m-d') ?? 'N/A',
+                    $concert->event_time?->format('H:i:s') ?? 'N/A',
+                    $concert->venue ?? 'N/A',
+                    $concert->base_price,
+                    $concert->available_tickets,
+                    $concert->status,
+                    $concert->featured ? 'Yes' : 'No',
+                    $concert->created_at->format('Y-m-d H:i:s')
+                ]);
+            }
+            
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

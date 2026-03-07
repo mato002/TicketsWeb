@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Services\PaymentService;
+use App\Services\MpesaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
@@ -107,6 +109,93 @@ class PaymentController extends Controller
                 'message' => 'Payment processing failed. Please try again.'
             ], 500);
         }
+    }
+    
+    /**
+     * Handle M-Pesa callback
+     */
+    public function mpesaCallback(Request $request)
+    {
+        try {
+            $callbackData = $request->all();
+            
+            Log::info('M-Pesa callback received', [
+                'data' => $callbackData
+            ]);
+            
+            // Extract transaction details
+            $resultCode = $callbackData['Body']['stkCallback']['ResultCode'] ?? null;
+            $transactionId = $callbackData['Body']['stkCallback']['MerchantRequestID'] ?? null;
+            $mpesaReceipt = $callbackData['Body']['stkCallback']['CallbackMetadata']['MpesaReceiptNumber'] ?? null;
+            
+            if ($resultCode == '0') {
+                // Payment successful - find and update booking
+                $booking = Booking::where('transaction_id', $transactionId)->first();
+                
+                if ($booking) {
+                    $booking->update([
+                        'status' => 'confirmed',
+                        'confirmed_at' => now(),
+                        'mpesa_receipt' => $mpesaReceipt,
+                        'payment_details' => json_encode($callbackData)
+                    ]);
+                    
+                    Log::info('M-Pesa payment confirmed', [
+                        'booking_id' => $booking->id,
+                        'transaction_id' => $transactionId,
+                        'mpesa_receipt' => $mpesaReceipt
+                    ]);
+                }
+            } else {
+                // Payment failed
+                $booking = Booking::where('transaction_id', $transactionId)->first();
+                
+                if ($booking) {
+                    $booking->update([
+                        'status' => 'failed',
+                        'failed_reason' => $this->getMpesaErrorMessage($resultCode),
+                        'payment_details' => json_encode($callbackData)
+                    ]);
+                }
+                
+                Log::error('M-Pesa payment failed', [
+                    'transaction_id' => $transactionId,
+                    'result_code' => $resultCode,
+                    'error_message' => $this->getMpesaErrorMessage($resultCode)
+                ]);
+            }
+            
+            return response()->json(['ResultCode' => 0]);
+            
+        } catch (\Exception $e) {
+            Log::error('M-Pesa callback error', [
+                'error' => $e->getMessage(),
+                'data' => $request->all()
+            ]);
+            
+            return response()->json(['ResultCode' => 1]);
+        }
+    }
+    
+    /**
+     * Get M-Pesa error message
+     */
+    private function getMpesaErrorMessage($resultCode)
+    {
+        $errors = [
+            '1' => 'Insufficient funds',
+            '2' => 'Less than minimum transaction value',
+            '3' => 'More than maximum transaction value',
+            '4' => 'Could not find subscriber',
+            '5' => 'Could not find transaction',
+            '6' => 'Transaction was not successful',
+            '1032' => 'Request cancelled by user',
+            '1037' => 'Timeout in processing transaction',
+            '2001' => 'Invalid initialization request',
+            '2002' => 'Invalid initialization request'
+        ];
+        
+        return $errors[$resultCode] ?? 'Unknown error occurred';
     }
     
     /**

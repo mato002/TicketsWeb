@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin Dashboard') - Concert Booking Admin</title>
+    <title>@yield('title', 'Admin Dashboard') - TwendeeTickets Admin</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <!-- Custom Admin CSS -->
     <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
     
@@ -20,9 +22,19 @@
         <!-- Sidebar -->
         <div class="border-end bg-dark sidebar-sticky" id="sidebar-wrapper">
             <div class="sidebar-heading border-bottom bg-dark text-white d-flex justify-content-between align-items-center">
-                <div>
-                    <i class="fas fa-music me-2"></i>
-                    <span class="sidebar-brand-text">Concert Admin</span>
+                <div class="d-flex align-items-center">
+                    @if(file_exists(public_path('images/logo/logo.png')))
+                        <img src="{{ asset('images/logo/logo.png') }}" alt="TwendeeTickets Admin Logo" class="me-2" style="height: 32px; width: auto;">
+                    @elseif(file_exists(public_path('images/logo/logo.jpg')))
+                        <img src="{{ asset('images/logo/logo.jpg') }}" alt="TwendeeTickets Admin Logo" class="me-2" style="height: 32px; width: auto;">
+                    @elseif(file_exists(public_path('images/logo/logo.jpeg')))
+                        <img src="{{ asset('images/logo/logo.jpeg') }}" alt="TwendeeTickets Admin Logo" class="me-2" style="height: 32px; width: auto;">
+                    @elseif(file_exists(public_path('images/logo/logo.svg')))
+                        <img src="{{ asset('images/logo/logo.svg') }}" alt="TwendeeTickets Admin Logo" class="me-2" style="height: 32px; width: auto;">
+                    @else
+                        <i class="fas fa-music me-2"></i>
+                    @endif
+                    <span class="sidebar-brand-text">TwendeeTickets</span>
                 </div>
                 <button class="btn btn-sm btn-outline-light d-md-none" id="sidebarClose">
                     <i class="fas fa-times"></i>
@@ -33,9 +45,9 @@
                     <i class="fas fa-tachometer-alt me-2"></i>
                     <span class="sidebar-text">Dashboard</span>
                 </a>
-                <a href="{{ route('admin.concerts.index') }}" class="list-group-item list-group-item-action bg-dark text-white {{ request()->routeIs('admin.concerts.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.events.index') }}" class="list-group-item list-group-item-action bg-dark text-white {{ request()->routeIs('admin.events.*') ? 'active' : '' }}">
                     <i class="fas fa-calendar-alt me-2"></i>
-                    <span class="sidebar-text">Concerts</span>
+                    <span class="sidebar-text">Events</span>
                 </a>
                 <a href="{{ route('admin.bookings.index') }}" class="list-group-item list-group-item-action bg-dark text-white {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
                     <i class="fas fa-ticket-alt me-2"></i>
@@ -110,7 +122,7 @@
                                     <div class="dropdown-item-text">
                                         <div class="fw-bold">{{ Auth::guard('admin')->user()->name }}</div>
                                         <div class="text-muted small">{{ Auth::guard('admin')->user()->email }}</div>
-                                        <div class="text-muted small">{{ Auth::guard('admin')->user()->role }}</div>
+                                        <div class="text-muted small">Administrator</div>
                                     </div>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
@@ -151,7 +163,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
-                    <span class="text-muted">&copy; {{ date('Y') }} Concert Booking System. All rights reserved.</span>
+                    <span class="text-muted">&copy; {{ date('Y') }} TwendeeTickets. All rights reserved.</span>
                 </div>
                 <div class="col-md-6 text-end">
                     <span class="text-muted">Admin Dashboard v1.0</span>
@@ -162,19 +174,51 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <!-- Custom Admin JS -->
     <script>
+        // SweetAlert2 global configuration
+        Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
         // Toggle sidebar
         document.getElementById("sidebarToggle").addEventListener("click", function() {
             document.getElementById("wrapper").classList.toggle("toggled");
             document.body.classList.toggle("sidebar-collapsed");
+            
+            // Save sidebar state to localStorage
+            if (document.getElementById("wrapper").classList.contains("toggled")) {
+                localStorage.setItem('sidebarState', 'collapsed');
+            } else {
+                localStorage.setItem('sidebarState', 'expanded');
+            }
         });
         
         // Close sidebar on mobile
         document.getElementById("sidebarClose").addEventListener("click", function() {
             document.getElementById("wrapper").classList.add("toggled");
             document.body.classList.add("sidebar-collapsed");
+            localStorage.setItem('sidebarState', 'collapsed');
+        });
+        
+        // Restore sidebar state on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const sidebarState = localStorage.getItem('sidebarState');
+            if (sidebarState === 'collapsed' && window.innerWidth < 768) {
+                document.getElementById("wrapper").classList.add("toggled");
+                document.body.classList.add("sidebar-collapsed");
+            }
         });
         
         // Auto-close sidebar on mobile when clicking outside
@@ -190,16 +234,56 @@
                 !document.getElementById('wrapper').classList.contains('toggled')) {
                 document.getElementById('wrapper').classList.add('toggled');
                 document.body.classList.add('sidebar-collapsed');
+                localStorage.setItem('sidebarState', 'collapsed');
             }
         });
         
         // Handle window resize
         window.addEventListener('resize', function() {
             if (window.innerWidth >= 768) {
-                document.getElementById('wrapper').classList.remove('toggled');
-                document.body.classList.remove('sidebar-collapsed');
+                document.getElementById("wrapper").classList.remove("toggled");
+                document.body.classList.remove("sidebar-collapsed");
+                localStorage.setItem('sidebarState', 'expanded');
+            } else {
+                const sidebarState = localStorage.getItem('sidebarState');
+                if (sidebarState === 'collapsed') {
+                    document.getElementById("wrapper").classList.add("toggled");
+                    document.body.classList.add("sidebar-collapsed");
+                }
             }
         });
+
+        // Enhanced mobile sidebar toggle with better touch support
+        if ('ontouchstart' in window) {
+            document.getElementById("sidebarToggle").addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                document.getElementById("wrapper").classList.toggle("toggled");
+                document.body.classList.toggle("sidebar-collapsed");
+            });
+        }
+
+        // Show SweetAlert2 notifications for session flash messages
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                timer: 3000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '{{ session('error') }}',
+                timer: 5000,
+                showConfirmButton: true
+            });
+        @endif
     </script>
     
     @stack('scripts')
