@@ -66,10 +66,11 @@
                         <!-- Event Type Filter -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Event Type</label>
-                            <select name="type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                <option value="all" {{ request('type') == 'all' || !request('type') ? 'selected' : '' }}>All Events</option>
+                            <select name="type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                                    style="color: #374151 !important; background-color: #ffffff !important;">
+                                <option value="all" {{ request('type') == 'all' || !request('type') ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">All Events</option>
                                 @foreach($eventTypes as $key => $label)
-                                    <option value="{{ $key }}" {{ request('type') == $key ? 'selected' : '' }}>{{ $label }}</option>
+                                    <option value="{{ $key }}" {{ request('type') == $key ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">{{ $label }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -77,35 +78,38 @@
                         <!-- Location Filter -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                            <select name="location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                <option value="all" {{ request('location') == 'all' || !request('location') ? 'selected' : '' }}>All Locations</option>
-                                <option value="nairobi" {{ request('location') == 'nairobi' ? 'selected' : '' }}>Nairobi</option>
-                                <option value="mombasa" {{ request('location') == 'mombasa' ? 'selected' : '' }}>Mombasa</option>
-                                <option value="kisumu" {{ request('location') == 'kisumu' ? 'selected' : '' }}>Kisumu</option>
-                                <option value="nakuru" {{ request('location') == 'nakuru' ? 'selected' : '' }}>Nakuru</option>
-                                <option value="eldoret" {{ request('location') == 'eldoret' ? 'selected' : '' }}>Eldoret</option>
+                            <select name="location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                                    style="color: #374151 !important; background-color: #ffffff !important;">
+                                <option value="all" {{ request('location') == 'all' || !request('location') ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">All Locations</option>
+                                <option value="nairobi" {{ request('location') == 'nairobi' ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">Nairobi</option>
+                                <option value="mombasa" {{ request('location') == 'mombasa' ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">Mombasa</option>
+                                <option value="kisumu" {{ request('location') == 'kisumu' ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">Kisumu</option>
+                                <option value="nakuru" {{ request('location') == 'nakuru' ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">Nakuru</option>
+                                <option value="eldoret" {{ request('location') == 'eldoret' ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">Eldoret</option>
                             </select>
                         </div>
                         
                         <!-- Date Filter -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
-                            <select name="date_range" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                <option value="all" {{ request('date_range') == 'all' || !request('date_range') ? 'selected' : '' }}>All Dates</option>
-                                <option value="today" {{ request('date_range') == 'today' ? 'selected' : '' }}>Today</option>
-                                <option value="this_week" {{ request('date_range') == 'this_week' ? 'selected' : '' }}>This Week</option>
-                                <option value="this_month" {{ request('date_range') == 'this_month' ? 'selected' : '' }}>This Month</option>
-                                <option value="next_month" {{ request('date_range') == 'next_month' ? 'selected' : '' }}>Next Month</option>
+                            <select name="date_range" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                                    style="color: #374151 !important; background-color: #ffffff !important;">
+                                <option value="all" {{ request('date_range') == 'all' || !request('date_range') ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">All Dates</option>
+                                <option value="today" {{ request('date_range') == 'today' ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">Today</option>
+                                <option value="this_week" {{ request('date_range') == 'this_week' ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">This Week</option>
+                                <option value="this_month" {{ request('date_range') == 'this_month' ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">This Month</option>
+                                <option value="next_month" {{ request('date_range') == 'next_month' ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">Next Month</option>
                             </select>
                         </div>
 
                         <!-- Sort -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
-                            <select name="sort" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                <option value="date" {{ request('sort') == 'date' ? 'selected' : '' }}>Date</option>
-                                <option value="price" {{ request('sort') == 'price' ? 'selected' : '' }}>Price</option>
-                                <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }}>Title</option>
+                            <select name="sort" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                                    style="color: #374151 !important; background-color: #ffffff !important;">
+                                <option value="date" {{ request('sort') == 'date' ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">Date</option>
+                                <option value="price" {{ request('sort') == 'price' ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">Price</option>
+                                <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }} style="color: #374151 !important; background-color: #ffffff !important;">Title</option>
                             </select>
                         </div>
 

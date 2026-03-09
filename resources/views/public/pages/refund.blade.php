@@ -5,8 +5,12 @@
 @section('content')
 <div class="bg-gray-50 min-h-screen">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="hero-section relative text-white py-16" style="background-image: url('https://images.pexels.com/photos/534216/pexels-photo-534216.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop');">
+        <!-- Dark Overlay -->
+        <div class="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
+        
+        <!-- Hero Content -->
+        <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <h1 class="text-4xl md:text-5xl font-bold mb-6">Refund Policy</h1>
                 <p class="text-xl md:text-2xl text-purple-100">Fair, transparent, and customer-friendly refund terms</p>
@@ -108,10 +112,9 @@
             </div>
         </div>
     </section>
-</div>
-@endsection
 
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">2.3 Customer-Initiated Cancellations</h3>
+    <section class="mb-8">
+        <h3 class="text-2xl font-bold text-purple-900 mb-4">2.3 Customer-Initiated Cancellations</h3>
             <p class="text-gray-600 mb-4">
                 For cancellations initiated by you:
             </p>
@@ -119,36 +122,11 @@
                 <ul class="list-disc list-inside text-gray-600 space-y-2">
                     <li><strong>More than 30 days before event:</strong> 90% refund (10% processing fee)</li>
                     <li><strong>15-30 days before event:</strong> 75% refund (25% processing fee)</li>
-                    <li><strong>7-14 days before event:</strong> 50% refund (50% processing fee)</li>
                     <li><strong>Less than 7 days before event:</strong> No refund available</li>
                 </ul>
             </div>
             <p class="text-gray-600 mb-4 italic">
                 Note: Service fees are non-refundable for customer-initiated cancellations.
-            </p>
-        </section>
-
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">3. Accommodation Refunds</h2>
-            
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">3.1 Standard Cancellation</h3>
-            <p class="text-gray-600 mb-4">
-                Accommodation cancellations follow these guidelines:
-            </p>
-            <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                <li><strong>More than 14 days before check-in:</strong> Full refund</li>
-                <li><strong>7-14 days before check-in:</strong> 50% refund</li>
-                <li><strong>Less than 7 days before check-in:</strong> No refund</li>
-            </ul>
-
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">3.2 Special Circumstances</h3>
-            <p class="text-gray-600 mb-4">
-                Accommodations may have their own specific cancellation policies. Always check the individual accommodation's policy before booking. These specific policies will be displayed during the booking process.
-            </p>
-
-            <h3 class="text-xl font-semibold text-gray-800 mb-3">3.3 No-Show Policy</h3>
-            <p class="text-gray-600 mb-4">
-                If you fail to check in without prior cancellation, no refund will be provided. Please contact us as soon as possible if you need to cancel your accommodation.
             </p>
         </section>
 
@@ -309,5 +287,4 @@
         </div>
     </div>
 </div>
-@endsection
 

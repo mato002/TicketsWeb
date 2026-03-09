@@ -4,91 +4,71 @@
 @section('description', $concert->description ? Str::limit($concert->description, 160) : 'Join us for an amazing concert experience with ' . $concert->artist . ' at ' . $concert->venue . ' on ' . $concert->event_date->format('M j, Y') . '.')
 
 @section('content')
-<div class="bg-gray-50 min-h-screen">
-    <!-- Concert Header -->
-    <div class="bg-white shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex flex-col lg:flex-row gap-8">
-                <!-- Concert Image -->
-                <div class="lg:w-1/2">
-                    <div class="relative">
-                        @if($concert->image_url)
-                            <img src="{{ $concert->image_url }}" alt="{{ $concert->title }}" class="w-full h-96 object-cover rounded-lg shadow-lg">
-                        @else
-                            <div class="w-full h-96 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg shadow-lg flex items-center justify-center">
-                                <svg class="w-24 h-24 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
-                                </svg>
-                            </div>
-                        @endif
-                        @if($concert->featured)
-                            <div class="absolute top-4 left-4">
-                                <span class="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                                    Featured Event
-                                </span>
-                            </div>
-                        @endif
+<div class="min-h-screen">
+    <!-- Hero Section with Background Image -->
+    <div class="relative h-96 lg:h-[500px]">
+        @if($concert->image_url)
+            <div class="absolute inset-0">
+                <img src="{{ $concert->image_url }}" alt="{{ $concert->title }}" 
+                     class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60"></div>
+            </div>
+        @else
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-600 via-blue-600 to-purple-800">
+                <div class="absolute inset-0 bg-black/20"></div>
+            </div>
+        @endif
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+            <div class="text-white max-w-3xl">
+                <!-- Featured Badge -->
+                <div class="mb-4">
+                    @if($concert->featured)
+                        <span class="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                            Featured Concert
+                        </span>
+                    @endif
+                </div>
+                
+                <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">{{ $concert->title }}</h1>
+                <p class="text-xl md:text-2xl mb-6 text-purple-100 font-semibold">{{ $concert->artist }}</p>
+                
+                <div class="flex flex-wrap gap-4 mb-8">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>{{ $concert->venue }}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>{{ $concert->event_date->format('M j, Y') }}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>{{ $concert->event_time->format('g:i A') }}</span>
                     </div>
                 </div>
-
-                <!-- Concert Info -->
-                <div class="lg:w-1/2">
-                    <div class="mb-4">
-                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{{ $concert->title }}</h1>
-                        <p class="text-2xl text-purple-600 font-semibold">{{ $concert->artist }}</p>
-                    </div>
-
-                    <div class="space-y-4 mb-6">
-                        <div class="flex items-center">
-                            <svg class="w-5 h-5 text-gray-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                            <div>
-                                <p class="font-semibold text-gray-900">{{ $concert->venue }}</p>
-                                <p class="text-gray-600">{{ $concert->venue_address }}, {{ $concert->city }}, {{ $concert->state }}</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <svg class="w-5 h-5 text-gray-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            <div>
-                                <p class="font-semibold text-gray-900">{{ $concert->event_date->format('l, F j, Y') }}</p>
-                                <p class="text-gray-600">{{ $concert->event_time->format('g:i A') }} ({{ $concert->duration_minutes }} minutes)</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <svg class="w-5 h-5 text-gray-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                            </svg>
-                            <div>
-                                <p class="font-semibold text-gray-900">Starting from {{ $concert->formatted_price }}</p>
-                                <p class="text-gray-600">{{ $concert->available_tickets }} tickets remaining</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    @if($concert->description)
-                        <div class="mb-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2">About This Event</h3>
-                            <p class="text-gray-700 leading-relaxed">{{ $concert->description }}</p>
-                        </div>
-                    @endif
-
-                    <!-- Quick Actions -->
-                    <div class="flex flex-col sm:flex-row gap-4">
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    @if($concert->available_tickets > 0)
                         <a href="{{ route('public.booking.show', $concert) }}" 
-                           class="flex-1 bg-purple-600 text-white px-6 py-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors text-center">
-                            Book Tickets Now
+                           class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all transform hover:scale-105 shadow-xl">
+                            Book Tickets - {{ $concert->formatted_price }}
                         </a>
-                        <button onclick="shareConcert()" 
-                                class="flex-1 bg-gray-200 text-gray-800 px-6 py-4 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
-                            Share Event
+                    @else
+                        <button disabled class="bg-gray-400 text-white px-8 py-4 rounded-lg font-semibold text-lg cursor-not-allowed shadow-xl">
+                            Sold Out
                         </button>
-                    </div>
+                    @endif
+                    <button onclick="shareConcert()" 
+                            class="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all border border-white/30">
+                        Share Concert
+                    </button>
                 </div>
             </div>
         </div>

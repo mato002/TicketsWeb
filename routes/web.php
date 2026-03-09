@@ -150,9 +150,11 @@ Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     
     // Event Routes
-    Route::resource('events', ConcertController::class);
-    Route::patch('/events/{event}/toggle-featured', [ConcertController::class, 'toggleFeatured'])->name('events.toggle-featured');
-    Route::patch('/events/{event}/status', [ConcertController::class, 'updateStatus'])->name('events.update-status');
+    Route::resource('events', ConcertController::class)->parameters([
+        'events' => 'concert'
+    ]);
+    Route::patch('/events/{concert}/toggle-featured', [ConcertController::class, 'toggleFeatured'])->name('events.toggle-featured');
+    Route::patch('/events/{concert}/status', [ConcertController::class, 'updateStatus'])->name('events.update-status');
     Route::get('/events/export', [ConcertController::class, 'export'])->name('events.export');
     
     // Accommodation Routes
@@ -216,5 +218,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// M-Pesa Debug Routes
+Route::get('/debug/mpesa', [App\Http\Controllers\MpesaDebugController::class, 'index']);
+Route::post('/debug/mpesa/test', [App\Http\Controllers\MpesaDebugController::class, 'test'])->name('debug.mpesa.test');
 
 require __DIR__.'/auth.php';

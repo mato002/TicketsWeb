@@ -5,8 +5,12 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="hero-gradient text-white py-20 lg:py-32">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="hero-section relative text-white py-20 lg:py-32" style="background-image: url('https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop');">
+    <!-- Dark Overlay -->
+    <div class="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
+    
+    <!-- Hero Content -->
+    <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
             <h1 class="text-4xl md:text-6xl font-bold mb-6">
                 Discover Your Next

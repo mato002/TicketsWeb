@@ -17,6 +17,74 @@
         .hero-gradient {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
+        
+        /* Hero Section with Background Image */
+        .hero-section {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hero-section .absolute.inset-0 {
+            z-index: 0;
+        }
+        
+        .hero-section .relative.z-20 {
+            z-index: 20;
+        }
+        
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 5;
+        }
+        
+        /* Enhanced mobile responsiveness for hero sections */
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: 500px;
+            }
+            
+            .hero-gradient {
+                padding: 2rem 0;
+            }
+            
+            .hero-gradient h1,
+            .hero-section h1 {
+                font-size: 1.75rem;
+                line-height: 1.1;
+                margin-bottom: 1rem;
+            }
+            
+            .hero-gradient p,
+            .hero-section p {
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-section {
+                min-height: 400px;
+            }
+            
+            .hero-gradient h1,
+            .hero-section h1 {
+                font-size: 1.5rem;
+            }
+            
+            .hero-gradient p,
+            .hero-section p {
+                font-size: 0.875rem;
+            }
+        }
         .concert-card {
             transition: all 0.3s ease;
         }
@@ -63,6 +131,27 @@
             .py-16 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
             .py-8 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
             .px-8 { padding-left: 1rem; padding-right: 1rem; }
+            
+            /* Mobile navigation fixes */
+            .nav-container {
+                overflow-x: hidden;
+                max-width: 100vw;
+            }
+            
+            .nav-items {
+                min-width: 0;
+                flex-shrink: 1;
+            }
+            
+            .nav-brand {
+                min-width: 0;
+                flex-shrink: 1;
+            }
+            
+            .nav-actions {
+                flex-shrink: 0;
+                min-width: fit-content;
+            }
         }
         
         /* Enhanced mobile touch targets */
@@ -116,73 +205,311 @@
                 gap: 0.75rem;
             }
             
+            /* Ensure dropdowns appear above all content */
+            .dropdown-menu.z-\[99999\] {
+                position: fixed !important;
+                z-index: 99999 !important;
+                transform: translateY(0);
+            }
+            
+            /* Position dropdowns relative to viewport */
+            .relative .dropdown-menu.z-\[99999\] {
+                top: 80px !important;
+            }
+            
+            /* Enhanced dropdown visibility */
+            nav .dropdown-menu {
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+                border: 1px solid rgba(229, 231, 235, 0.8) !important;
+                backdrop-filter: blur(8px) !important;
+            }
+            
+            /* Ensure dropdowns are above all content */
+            body > * {
+                z-index: 1;
+                position: relative;
+            }
+            
+            nav {
+                z-index: 99999 !important;
+                position: relative;
+            }
+            
+            /* Enhanced dropdown styling for floating effect */
+            .dropdown-menu {
+                background: white;
+                border: 1px solid #e5e7eb;
+                border-radius: 0.5rem;
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                overflow: hidden;
+                position: fixed !important;
+                z-index: 99999 !important;
+                backdrop-filter: blur(8px);
+                background: rgba(255, 255, 255, 0.95);
+                min-width: 14rem;
+                max-width: 16rem;
+            }
+            
+            /* Position dropdowns relative to their trigger buttons */
+            .relative .dropdown-menu {
+                top: 70px !important;
+                right: auto !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+            }
+            
+            /* Position dropdowns relative to viewport */
+            .relative:nth-child(2) .dropdown-menu {
+                left: 25% !important;
+                transform: translateX(-50%) !important;
+            }
+            
+            .relative:nth-child(3) .dropdown-menu {
+                left: 45% !important;
+                transform: translateX(-50%) !important;
+            }
+            
+            /* Ensure dropdowns float above hero section */
+            .dropdown-menu::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(255, 255, 255, 0.95);
+                z-index: -1;
+            }
+            
             /* Larger touch targets for small screens */
             button, a {
                 min-height: 52px;
                 padding: 14px 18px;
             }
         }
+        
+        /* Dropdown menu styling - same as dashboard */
+        .dropdown-menu {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            transition: background-color 0.2s ease;
+            font-size: 0.875rem;
+        }
+        
+        .dropdown-item:hover {
+            background: #f9fafb;
+        }
+        
+        /* Mobile dropdown adjustments */
+        @media (max-width: 768px) {
+            .mobile-dropdown {
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                border-radius: 1rem 1rem 0 0;
+                max-height: 70vh;
+                overflow-y: auto;
+                transform: translateY(100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .mobile-dropdown.show {
+                transform: translateY(0);
+            }
+        }
+        
+        /* Fix for dropdown select text visibility */
+        select {
+            color: #374151 !important;
+            background-color: #ffffff !important;
+        }
+        
+        select option {
+            color: #374151 !important;
+            background-color: #ffffff !important;
+        }
+        
+        select:focus {
+            color: #374151 !important;
+            background-color: #ffffff !important;
+        }
+        
+        /* Ensure dropdown text is visible in all states */
+        select option:checked,
+        select option:hover,
+        select option:focus {
+            color: #374151 !important;
+            background-color: #f3f4f6 !important;
+        }
     </style>
 </head>
 <body class="font-sans antialiased bg-gray-50" x-data="{ mobileMenuOpen: false }">
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
+    <nav class="bg-white shadow-xl sticky top-0 z-[99999]">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20 min-w-0 overflow-hidden">
                 <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="{{ route('public.home') }}" class="flex items-center space-x-2">
+                <div class="flex items-center flex-shrink-0 min-w-0">
+                    <a href="{{ route('public.home') }}" class="flex items-center space-x-2 min-w-0">
                         @if(file_exists(public_path('images/logo/logo.png')))
-                            <img src="{{ asset('images/logo/logo.png') }}" alt="TwendeeTickets Logo" class="h-8 w-auto">
+                            <img src="{{ asset('images/logo/logo.png') }}" alt="TwendeeTickets Logo" class="h-8 w-auto flex-shrink-0">
                         @elseif(file_exists(public_path('images/logo/logo.jpg')))
-                            <img src="{{ asset('images/logo/logo.jpg') }}" alt="TwendeeTickets Logo" class="h-8 w-auto">
+                            <img src="{{ asset('images/logo/logo.jpg') }}" alt="TwendeeTickets Logo" class="h-8 w-auto flex-shrink-0">
                         @elseif(file_exists(public_path('images/logo/logo.jpeg')))
-                            <img src="{{ asset('images/logo/logo.jpeg') }}" alt="TwendeeTickets Logo" class="h-8 w-auto">
+                            <img src="{{ asset('images/logo/logo.jpeg') }}" alt="TwendeeTickets Logo" class="h-8 w-auto flex-shrink-0">
                         @elseif(file_exists(public_path('images/logo/logo.svg')))
-                            <img src="{{ asset('images/logo/logo.svg') }}" alt="TwendeeTickets Logo" class="h-8 w-auto">
+                            <img src="{{ asset('images/logo/logo.svg') }}" alt="TwendeeTickets Logo" class="h-8 w-auto flex-shrink-0">
                         @else
-                            <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                            <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
                                 <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
                                 </svg>
                             </div>
                         @endif
-                        <span class="text-xl font-bold text-gray-900">TwendeeTickets</span>
+                        <span class="text-xl font-bold text-gray-900 hidden sm:block">TwendeeTickets</span>
+                        <span class="text-lg font-bold text-gray-900 sm:hidden truncate">TwendeeTickets</span>
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ route('public.home') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Home</a>
-                    <a href="{{ route('public.events.index') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Events</a>
-                    <a href="{{ route('public.about') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">About</a>
-                    <a href="{{ route('public.contact') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Contact</a>
-                    <a href="{{ route('public.help.index') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Help</a>
+                <div class="hidden md:flex items-center space-x-6 lg:space-x-8 flex-shrink-0">
+                    <!-- Events Dropdown -->
+                    <div class="relative" x-data="{ dropdownOpen: false }">
+                        <button @click="dropdownOpen = !dropdownOpen" @click.outside="dropdownOpen = false" class="flex items-center text-gray-700 hover:text-purple-600 font-medium transition-colors whitespace-nowrap">
+                            Events
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div x-show="dropdownOpen" 
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             @click.outside="dropdownOpen = false"
+                             class="dropdown-menu absolute right-0 mt-2 w-56 sm:w-64 py-2 z-[99999] mobile-dropdown bg-white rounded-lg shadow-lg border border-gray-200">
+                            <a href="{{ route('public.events.index') }}" class="block px-4 py-3 text-sm text-black hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span>All Events</span>
+                                </div>
+                            </a>
+                            <a href="#" class="block px-4 py-3 text-sm text-black hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                    </svg>
+                                    <span>Concerts</span>
+                                </div>
+                            </a>
+                            <a href="#" class="block px-4 py-3 text-sm text-black hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span>Comedy Shows</span>
+                                </div>
+                            </a>
+                            <a href="#" class="block px-4 py-3 text-sm text-black hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                    <span>Sports Events</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Services Dropdown -->
+                    <div class="relative" x-data="{ dropdownOpen: false }">
+                        <button @click="dropdownOpen = !dropdownOpen" @click.outside="dropdownOpen = false" class="flex items-center text-gray-700 hover:text-purple-600 font-medium transition-colors whitespace-nowrap">
+                            Services
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div x-show="dropdownOpen" 
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="dropdown-menu absolute right-0 mt-2 w-56 sm:w-64 py-2 z-[99999] mobile-dropdown bg-white rounded-lg shadow-lg border border-gray-200">
+                            <a href="#" class="block px-4 py-3 text-sm text-black hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                    </svg>
+                                    <span>Accommodation</span>
+                                </div>
+                            </a>
+                            <a href="#" class="block px-4 py-3 text-sm text-black hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                    </svg>
+                                    <span>Ticket Booking</span>
+                                </div>
+                            </a>
+                            <a href="#" class="block px-4 py-3 text-sm text-black hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                    </svg>
+                                    <span>Payment Plans</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <a href="{{ route('public.about') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors whitespace-nowrap hidden lg:block">About</a>
+                    <a href="{{ route('public.contact') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors whitespace-nowrap hidden lg:block">Contact</a>
+                    <a href="{{ route('public.help.index') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors whitespace-nowrap">Help</a>
                 </div>
 
                 <!-- Right Side -->
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
                     <!-- Cart Icon -->
-                    <a href="{{ route('cart.index') }}" class="relative p-2 text-gray-700 hover:text-purple-600 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <a href="{{ route('cart.index') }}" class="relative p-2 text-gray-700 hover:text-purple-600 transition-colors flex-shrink-0">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
                         </svg>
                         @php
                             $cartCount = count(session('cart', []));
                         @endphp
                         @if($cartCount > 0)
-                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center font-semibold">
                                 {{ $cartCount }}
                             </span>
                         @endif
                     </a>
 
                     @auth
-                        <div class="relative" x-data="{ open: false }">
-                            <button @click="open = ! open" class="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors">
-                                <img class="w-8 h-8 rounded-full" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=667eea&color=fff" alt="Profile">
-                                <span class="font-medium">{{ auth()->user()->name }}</span>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="relative hidden sm:block" x-data="{ open: false }">
+                            <button @click="open = ! open" @click.outside="open = false" class="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors whitespace-nowrap">
+                                <img class="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex-shrink-0" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=667eea&color=fff" alt="Profile">
+                                <span class="font-medium text-sm hidden lg:block">{{ auth()->user()->name }}</span>
+                                <svg class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </button>
@@ -196,56 +523,59 @@
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95"
                                  @click.outside="open = false"
-                                 class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50"
-                                 style="display: none;">
-                                <a href="{{ route('public.dashboard.profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-purple-600 transition-colors">
-                                    <div class="flex items-center space-x-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 class="dropdown-menu absolute right-0 mt-2 w-56 sm:w-64 py-2 z-[99999] mobile-dropdown bg-white rounded-lg shadow-lg border border-gray-200">
+                                <div class="px-4 py-3 border-b border-gray-100">
+                                    <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
+                                    <p class="text-xs text-gray-500">{{ auth()->user()->email }}</p>
+                                </div>
+                                <a href="{{ route('public.dashboard.profile') }}" class="block px-4 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                                    <div class="flex items-center space-x-3">
+                                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                         </svg>
-                                        <span>Profile</span>
+                                        <span class="text-sm">Profile Settings</span>
                                     </div>
                                 </a>
-                                <a href="{{ route('public.dashboard.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-purple-600 transition-colors">
-                                    <div class="flex items-center space-x-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <a href="{{ route('public.dashboard.index') }}" class="block px-4 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                                    <div class="flex items-center space-x-3">
+                                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                                         </svg>
-                                        <span>Dashboard</span>
+                                        <span class="text-sm">Dashboard</span>
                                     </div>
                                 </a>
-                                <a href="{{ route('public.dashboard.bookings') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-purple-600 transition-colors">
-                                    <div class="flex items-center space-x-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <a href="{{ route('public.dashboard.bookings') }}" class="block px-4 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                                    <div class="flex items-center space-x-3">
+                                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                                         </svg>
-                                        <span>My Bookings</span>
+                                        <span class="text-sm">My Bookings</span>
                                     </div>
                                 </a>
                                 <hr class="my-2">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-red-600 transition-colors">
-                                        <div class="flex items-center space-x-2">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <button type="submit" class="w-full text-left px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">
+                                        <div class="flex items-center space-x-3">
+                                            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                             </svg>
-                                            <span>Logout</span>
+                                            <span class="text-sm">Sign Out</span>
                                         </div>
                                     </button>
                                 </form>
                             </div>
                         </div>
                     @else
-                        <div class="flex items-center space-x-3">
-                            <a href="{{ route('login') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors">Login</a>
-                            <a href="{{ route('register') }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors">Sign Up</a>
+                        <div class="hidden sm:flex items-center space-x-2 lg:space-x-3 flex-shrink-0">
+                            <a href="{{ route('login') }}" class="text-gray-700 hover:text-purple-600 font-medium transition-colors whitespace-nowrap text-sm lg:text-base">Login</a>
+                            <a href="{{ route('register') }}" class="bg-purple-600 text-white px-3 py-1.5 lg:px-4 lg:py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors text-sm lg:text-base whitespace-nowrap">Sign Up</a>
                         </div>
                     @endauth
 
                     <!-- Mobile menu button -->
-                    <button @click="mobileMenuOpen = ! mobileMenuOpen" class="md:hidden p-2 text-gray-700 hover:text-purple-600 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button @click="mobileMenuOpen = ! mobileMenuOpen" class="md:hidden p-2 text-gray-700 hover:text-purple-600 transition-colors flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
                     </button>
@@ -263,7 +593,7 @@
          x-transition:leave-start="opacity-100 transform translate-y-0"
          x-transition:leave-end="opacity-0 transform -translate-y-2"
          @click.away="mobileMenuOpen = false"
-         class="md:hidden bg-white border-b border-gray-200 shadow-lg"
+         class="md:hidden bg-white border-b border-gray-200 shadow-xl"
          style="display: none;">
         <div class="px-4 py-3 space-y-2">
             <a href="{{ route('public.home') }}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium">Home</a>
@@ -399,6 +729,120 @@
                 showConfirmButton: true
             });
         @endif
+        
+        // Function to position dropdowns under their trigger buttons
+        function positionDropdown(dropdown, button) {
+            const buttonRect = button.getBoundingClientRect();
+            const dropdownRect = dropdown.getBoundingClientRect();
+            
+            // Position dropdown below the button
+            dropdown.style.top = (buttonRect.bottom + window.scrollY + 8) + 'px';
+            dropdown.style.left = (buttonRect.left + window.scrollX + (buttonRect.width / 2) - (dropdownRect.width / 2) + 'px';
+            dropdown.style.right = 'auto';
+            dropdown.style.transform = 'none';
+        }
+        
+        // Setup dropdown positioning for all dropdowns
+        document.querySelectorAll('[x-data*="dropdownOpen"]').forEach(function(trigger) {
+            const button = trigger.querySelector('button');
+            const dropdown = trigger.querySelector('.dropdown-menu');
+            
+            if (button && dropdown) {
+                // Reposition when dropdown opens
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.attributeName === 'x-show' || dropdown.style.display === 'block') {
+                            if (dropdown.style.display !== 'none') {
+                                positionDropdown(dropdown, button);
+                            }
+                        }
+                    });
+                });
+                
+                observer.observe(trigger, {
+                    attributes: true,
+                    attributeFilter: ['x-show']
+                });
+                
+                // Also reposition on window resize
+                window.addEventListener('resize', function() {
+                    if (dropdown.style.display !== 'none' && dropdown.style.display !== '') {
+                        positionDropdown(dropdown, button);
+                    }
+                });
+            }
+        });
+    });
+    </div>
+    
+    <!-- Session Flash Notifications -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle SweetAlert2 notifications
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                timer: 3000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '{{ session('error') }}',
+                timer: 5000,
+                showConfirmButton: true
+            });
+        @endif
+        
+        // Function to position dropdowns under their trigger buttons
+        function positionDropdown(dropdown, button) {
+            const buttonRect = button.getBoundingClientRect();
+            const dropdownRect = dropdown.getBoundingClientRect();
+            
+            // Position dropdown below the button
+            dropdown.style.top = (buttonRect.bottom + window.scrollY + 8) + 'px';
+            dropdown.style.left = (buttonRect.left + window.scrollX + (buttonRect.width / 2) - (dropdownRect.width / 2) + 'px';
+            dropdown.style.right = 'auto';
+            dropdown.style.transform = 'none';
+        }
+        
+        // Setup dropdown positioning for all dropdowns
+        document.querySelectorAll('[x-data*="dropdownOpen"]').forEach(function(trigger) {
+            const button = trigger.querySelector('button');
+            const dropdown = trigger.querySelector('.dropdown-menu');
+            
+            if (button && dropdown) {
+                // Reposition when dropdown opens
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.attributeName === 'x-show' || dropdown.style.display === 'block') {
+                            if (dropdown.style.display !== 'none') {
+                                positionDropdown(dropdown, button);
+                            }
+                        }
+                    });
+                });
+                
+                observer.observe(trigger, {
+                    attributes: true,
+                    attributeFilter: ['x-show']
+                });
+                
+                // Also reposition on window resize
+                window.addEventListener('resize', function() {
+                    if (dropdown.style.display !== 'none' && dropdown.style.display !== '') {
+                        positionDropdown(dropdown, button);
+                    }
+                });
+            }
+        });
     });
     </script>
     

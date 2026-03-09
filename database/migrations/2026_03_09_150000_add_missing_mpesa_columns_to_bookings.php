@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->boolean('is_guest_booking')->default(false)->after('special_requests');
+            $table->string('mpesa_transaction_id')->nullable()->after('payment_method');
+            $table->string('payment_status')->default('pending')->after('status');
         });
     }
 
@@ -22,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->dropColumn('is_guest_booking');
+            $table->dropColumn(['mpesa_transaction_id', 'payment_status']);
         });
     }
 };

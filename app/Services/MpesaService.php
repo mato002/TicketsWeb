@@ -26,7 +26,98 @@ class MpesaService
         $this->baseUrl = env('MPESA_ENVIRONMENT') === 'production' 
             ? 'https://api.safaricom.co.ke' 
             : 'https://sandbox.safaricom.co.ke';
-        $this->callbackUrl = env('MPESA_CALLBACK_URL', route('payment.mpesa.callback'));
+        
+        // Use a valid callback URL for testing
+        $this->callbackUrl = env('MPESA_CALLBACK_URL', 'https://webhook.site/unique-id-for-testing');
+    }
+
+    /**
+     * Initiate payment - wrapper for STK Push
+     */
+    public function initiatePayment($booking, $phoneNumber)
+    {
+        try {
+            // Validate and format phone number
+            $formattedPhone = $this->validateMpesaPhone($phoneNumber);
+            if (!$formattedPhone) {
+                return [
+                    'success' => false,
+                    'message' => 'Invalid M-Pesa phone number format'
+                ];
+            }
+
+            // Use STK Push for payment
+            $result = $this->initiateStkPush(
+                $formattedPhone,
+                $booking->total_amount,
+                $booking->booking_reference
+            );
+
+            if ($result['success']) {
+                return [
+                    'success' => true,
+                    'transaction_id' => $result['data']['CheckoutRequestID'] ?? null,
+                    'message' => 'M-Pesa payment initiated successfully',
+                    'data' => $result['data']
+                ];
+            }
+
+            return $result;
+
+        } catch (\Exception $e) {
+            Log::error('M-Pesa payment initiation failed', [
+                'error' => $e->getMessage(),
+                'booking_id' => $booking->id,
+                'phone' => $phoneNumber,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Return specific error message
+            $errorMessage = $e->getMessage();
+            
+            // Common error patterns and user-friendly messages
+            if (strpos($errorMessage, 'access token') !== false) {
+                return [
+                    'success' => false,
+                    'message' => 'M-Pesa authentication failed. Please check your API credentials.'
+                ];
+            }
+            
+            if (strpos($errorMessage, 'Invalid phone') !== false) {
+                return [
+                    'success' => false,
+                    'message' => 'Invalid M-Pesa phone number format. Please use format 2547XXXXXXXX.'
+                ];
+            }
+            
+            if (strpos($errorMessage, 'HTTP') !== false) {
+                return [
+                    'success' => false,
+                    'message' => 'M-Pesa service is currently unavailable. Please try again later.'
+                ];
+            }
+            
+            if (strpos($errorMessage, 'timeout') !== false) {
+                return [
+                    'success' => false,
+                    'message' => 'M-Pesa request timed out. Please check your connection and try again.'
+                ];
+            }
+            
+            // Return the actual error message if it's user-friendly
+            if (strlen($errorMessage) < 100 && !strpos($errorMessage, 'stack trace')) {
+                return [
+                    'success' => false,
+                    'message' => 'M-Pesa payment failed: ' . $errorMessage
+                ];
+            }
+            
+            // Fallback to a generic but helpful message
+            return [
+                'success' => false,
+                'message' => 'M-Pesa payment failed. Please check your phone number and try again.'
+            ];
+        }
     }
 
     /**
@@ -36,7 +127,7 @@ class MpesaService
     {
         try {
             $timestamp = date('YmdHis');
-            $password = base64_encode($this->consumerKey . $this->consumerSecret . $timestamp);
+            $password = base64_encode($this->shortcode . $this->passkey . $timestamp);
             
             $requestBody = [
                 'BusinessShortCode' => $this->shortcode,
@@ -44,19 +135,19 @@ class MpesaService
                 'Timestamp' => $timestamp,
                 'TransactionType' => 'CustomerPayBillOnline',
                 'Amount' => $amount,
-                'PartyA' => $this->shortcode,
-                'PartyB' => $phoneNumber,
+                'PartyA' => $phoneNumber,
+                'PartyB' => $this->shortcode,
                 'PhoneNumber' => $phoneNumber,
                 'CallBackURL' => $this->callbackUrl,
                 'AccountReference' => $accountReference ?? 'TWENDEETICKETS',
-                'TransactionDesc' => 'Payment for TwendeeTickets booking',
-                'TransactionType' => 'CustomerPayBillOnline'
+                'TransactionDesc' => 'Payment for TwendeeTickets booking'
             ];
 
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $this->generateAccessToken()
-            ])->post($this->baseUrl . '/mpesa/stkpush/v1/processrequest', $requestBody);
+            ])->timeout(10) // 10 second timeout for testing
+            ->post($this->baseUrl . '/mpesa/stkpush/v1/processrequest', $requestBody);
 
             $responseData = $response->json();
 
@@ -76,12 +167,44 @@ class MpesaService
             Log::error('M-Pesa STK Push failed', [
                 'error' => $e->getMessage(),
                 'phone' => $phoneNumber,
-                'amount' => $amount
+                'amount' => $amount,
+                'trace' => $e->getTraceAsString()
             ]);
+
+            // Return specific error message
+            $errorMessage = $e->getMessage();
+            
+            if (strpos($errorMessage, 'access token') !== false) {
+                return [
+                    'success' => false,
+                    'message' => 'M-Pesa authentication failed. Please check your API credentials.'
+                ];
+            }
+            
+            if (strpos($errorMessage, 'HTTP') !== false) {
+                return [
+                    'success' => false,
+                    'message' => 'M-Pesa service is currently unavailable. Please try again later.'
+                ];
+            }
+            
+            if (strpos($errorMessage, 'timeout') !== false) {
+                return [
+                    'success' => false,
+                    'message' => 'M-Pesa request timed out. Please check your connection and try again.'
+                ];
+            }
+            
+            if (strpos($errorMessage, 'Invalid') !== false) {
+                return [
+                    'success' => false,
+                    'message' => 'Invalid M-Pesa request parameters. Please check your configuration.'
+                ];
+            }
 
             return [
                 'success' => false,
-                'message' => 'M-Pesa payment initiation failed: ' . $e->getMessage()
+                'message' => 'M-Pesa STK Push failed: ' . $errorMessage
             ];
         }
     }
@@ -93,7 +216,7 @@ class MpesaService
     {
         try {
             $timestamp = date('YmdHis');
-            $password = base64_encode($this->consumerKey . $this->consumerSecret . $timestamp);
+            $password = base64_encode($this->shortcode . $this->passkey . $timestamp);
             
             $requestBody = [
                 'BusinessShortCode' => $this->shortcode,
@@ -159,22 +282,39 @@ class MpesaService
         try {
             $credentials = base64_encode($this->consumerKey . ':' . $this->consumerSecret);
             
+            Log::info('M-Pesa token request', [
+                'url' => $this->baseUrl . '/oauth/v1/generate?grant_type=client_credentials',
+                'consumer_key' => $this->consumerKey ? 'set' : 'missing',
+                'consumer_secret' => $this->consumerSecret ? 'set' : 'missing'
+            ]);
+            
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Basic ' . $credentials
-            ])->get($this->baseUrl . '/oauth/v1/generate?grant_type=client_credentials');
+            ])->timeout(15) // 15 second timeout for token request
+            ->get($this->baseUrl . '/oauth/v1/generate?grant_type=client_credentials');
 
             $data = $response->json();
+            
+            Log::info('M-Pesa token response', [
+                'status' => $response->status(),
+                'response' => $data
+            ]);
             
             if (isset($data['access_token'])) {
                 Cache::put($cacheKey, $data['access_token'], now()->addMinutes(55));
                 return $data['access_token'];
             }
 
-            throw new \Exception('Failed to generate M-Pesa access token');
+            throw new \Exception('Failed to generate M-Pesa access token - ' . ($data['error'] ?? 'Unknown error'));
 
         } catch (\Exception $e) {
-            Log::error('M-Pesa token generation failed', ['error' => $e->getMessage()]);
+            Log::error('M-Pesa token generation failed', [
+                'error' => $e->getMessage(),
+                'consumer_key' => $this->consumerKey ? 'set' : 'missing',
+                'consumer_secret' => $this->consumerSecret ? 'set' : 'missing',
+                'base_url' => $this->baseUrl
+            ]);
             throw $e;
         }
     }
@@ -315,17 +455,25 @@ class MpesaService
         // Remove any non-digit characters
         $phone = preg_replace('/[^0-9]/', '', $phoneNumber);
         
-        // Validate Kenyan phone number format
-        if (strlen($phone) === 9 && substr($phone, 0, 1) === '7') {
-            return '254' . $phone; // Add country code
+        // Handle different Kenyan phone number formats
+        if (strlen($phone) === 9 && in_array(substr($phone, 0, 1), ['7', '1'])) {
+            return '254' . $phone; // Add country code (7xxxxxxxx or 1xxxxxxxx)
+        }
+        
+        if (strlen($phone) === 10 && substr($phone, 0, 2) === '07') {
+            return '254' . substr($phone, 1); // Remove 0 and add 254 (07xxxxxxxx)
+        }
+        
+        if (strlen($phone) === 10 && substr($phone, 0, 2) === '01') {
+            return '254' . substr($phone, 1); // Remove 0 and add 254 (01xxxxxxxx)
         }
         
         if (strlen($phone) === 12 && substr($phone, 0, 3) === '254') {
             return $phone; // Already has country code
         }
         
-        if (strlen($phone) === 10 && substr($phone, 0, 3) === '254') {
-            return $phone; // Full format
+        if (strlen($phone) === 13 && substr($phone, 0, 4) === '+254') {
+            return substr($phone, 1); // Remove + and keep 254
         }
         
         return false;

@@ -1,14 +1,14 @@
 @extends('layouts.public')
 
-@section('title', 'Frequently Asked Questions - ConcertHub')
-@section('description', 'Find answers to common questions about booking concerts, tickets, accommodations, and more.')
+@section('title', 'Frequently Asked Questions - TwendeeTickets')
+@section('description', 'Find answers to common questions about booking concerts, tickets, accommodations, and more with TwendeeTickets.')
 
 @section('content')
 <div class="bg-gradient-to-r from-purple-600 to-blue-600 py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
             <h1 class="text-4xl font-bold text-white mb-4">Frequently Asked Questions</h1>
-            <p class="text-xl text-purple-100">Everything you need to know about ConcertHub</p>
+            <p class="text-xl text-purple-100">Everything you need to know about TwendeeTickets</p>
         </div>
     </div>
 </div>

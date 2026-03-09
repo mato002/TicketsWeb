@@ -5,8 +5,12 @@
 @section('content')
 <div class="bg-gray-50 min-h-screen">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="hero-section relative text-white py-16" style="background-image: url('https://images.pexels.com/photos/6282332/pexels-photo-6282332.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop');">
+        <!-- Dark Overlay -->
+        <div class="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
+        
+        <!-- Hero Content -->
+        <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <h1 class="text-4xl md:text-5xl font-bold mb-6">Terms & Conditions</h1>
                 <p class="text-xl md:text-2xl text-purple-100">Our commitment to transparency and fair practices</p>
@@ -220,7 +224,7 @@
     <!-- Agreement Notice -->
     <div class="mt-8 bg-purple-50 rounded-lg p-6 border-l-4 border-purple-600">
         <p class="text-gray-700">
-            <strong>Important:</strong> By using ConcertHub, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
+            <strong>Important:</strong> By using TwendeeTickets, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
         </p>
     </div>
 </div>

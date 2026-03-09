@@ -108,83 +108,206 @@
                         </div>
                     </div>
 
-                    <!-- Payment Information -->
+                    <!-- Payment Method Selection -->
                     <div class="bg-white rounded-lg shadow-md p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-6">Payment Information</h2>
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">Payment Method</h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-3">Choose how you want to pay</label>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <!-- M-Pesa (Primary) -->
+                                    <div class="payment-method-option">
+                                        <input type="radio" 
+                                               id="payment_method_mpesa" 
+                                               name="payment_method" 
+                                               value="mpesa"
+                                               checked
+                                               class="sr-only payment-method-input">
+                                        <label for="payment_method_mpesa" 
+                                               class="flex items-center p-4 border-2 border-green-500 bg-green-50 rounded-lg cursor-pointer hover:border-green-600 transition-colors">
+                                            <i class="fas fa-mobile-alt text-2xl mr-3 text-green-600"></i>
+                                            <div>
+                                                <div class="font-medium text-green-900">M-Pesa</div>
+                                                <div class="text-sm text-green-700">Pay with mobile money</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Credit Card -->
+                                    <div class="payment-method-option">
+                                        <input type="radio" 
+                                               id="payment_method_credit_card" 
+                                               name="payment_method" 
+                                               value="credit_card"
+                                               class="sr-only payment-method-input">
+                                        <label for="payment_method_credit_card" 
+                                               class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-300 transition-colors">
+                                            <i class="fas fa-credit-card text-2xl mr-3 text-gray-400"></i>
+                                            <div>
+                                                <div class="font-medium text-gray-700">Credit/Debit Card</div>
+                                                <div class="text-sm text-gray-500">Visa, Mastercard, etc.</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- PayPal -->
+                                    <div class="payment-method-option">
+                                        <input type="radio" 
+                                               id="payment_method_paypal" 
+                                               name="payment_method" 
+                                               value="paypal"
+                                               class="sr-only payment-method-input">
+                                        <label for="payment_method_paypal" 
+                                               class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-300 transition-colors">
+                                            <i class="fab fa-paypal text-2xl mr-3 text-blue-400"></i>
+                                            <div>
+                                                <div class="font-medium text-gray-700">PayPal</div>
+                                                <div class="text-sm text-gray-500">Secure online payment</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Bank Transfer -->
+                                    <div class="payment-method-option">
+                                        <input type="radio" 
+                                               id="payment_method_bank_transfer" 
+                                               name="payment_method" 
+                                               value="bank_transfer"
+                                               class="sr-only payment-method-input">
+                                        <label for="payment_method_bank_transfer" 
+                                               class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-300 transition-colors">
+                                            <i class="fas fa-university text-2xl mr-3 text-gray-400"></i>
+                                            <div>
+                                                <div class="font-medium text-gray-700">Bank Transfer</div>
+                                                <div class="text-sm text-gray-500">Direct bank payment</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- M-Pesa Form (Shown by default) -->
+                    <div id="mpesa-form" class="bg-white rounded-lg shadow-md p-6 payment-form-section">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">M-Pesa Payment Details</h2>
+                        
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-mobile-alt text-green-600 text-xl mr-3"></i>
+                                <div>
+                                    <div class="font-semibold text-green-900">How M-Pesa works:</div>
+                                    <div class="text-sm text-green-700">Fast, secure mobile money payment</div>
+                                </div>
+                            </div>
+                            <ul class="text-sm text-green-800 space-y-1">
+                                <li>• Enter your M-Pesa phone number</li>
+                                <li>• Click "Complete Booking"</li>
+                                <li>• You'll receive an M-Pesa prompt on your phone</li>
+                                <li>• Enter your M-Pesa PIN to confirm payment</li>
+                                <li>• Receive instant confirmation via SMS</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">M-Pesa Phone Number *</label>
+                                <input type="tel" 
+                                       name="mpesa_phone" 
+                                       required
+                                       placeholder="07XXXXXXXX or 254XXXXXXXXX"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                <p class="text-xs text-gray-500 mt-1">Format: 07XXXXXXXX or 254XXXXXXXXX</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Phone Number *</label>
+                                <input type="tel" 
+                                       name="mpesa_phone_confirm" 
+                                       required
+                                       placeholder="Confirm phone number"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Credit Card Form (Hidden by default) -->
+                    <div id="credit-card-form" class="bg-white rounded-lg shadow-md p-6 payment-form-section hidden">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">Credit Card Information</h2>
                         
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Card Number *</label>
-                                <input type="text" name="card_number" required placeholder="1234 5678 9012 3456"
+                                <input type="text" name="card_number" placeholder="1234 5678 9012 3456"
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                             </div>
                             
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Expiry Date *</label>
-                                    <input type="text" name="expiry_date" required placeholder="MM/YY"
+                                    <input type="text" name="expiry_date" placeholder="MM/YY"
                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">CVV *</label>
-                                    <input type="text" name="cvv" required placeholder="123"
+                                    <input type="text" name="cvv" placeholder="123"
                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                                 </div>
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Cardholder Name *</label>
-                                <input type="text" name="cardholder_name" required 
+                                <input type="text" name="cardholder_name" 
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Billing Address -->
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-6">Billing Address</h2>
+                    <!-- PayPal Form (Hidden by default) -->
+                    <div id="paypal-form" class="bg-white rounded-lg shadow-md p-6 payment-form-section hidden">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">PayPal Payment</h2>
                         
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Street Address *</label>
-                                <input type="text" name="address" required 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                            </div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="flex items-center mb-3">
+                                <i class="fab fa-paypal text-blue-600 text-xl mr-3"></i>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">City *</label>
-                                    <input type="text" name="city" required 
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">State *</label>
-                                    <input type="text" name="state" required 
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">ZIP Code *</label>
-                                    <input type="text" name="zip_code" required 
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    <div class="font-semibold text-blue-900">Secure PayPal Payment</div>
+                                    <div class="text-sm text-blue-700">You'll be redirected to PayPal's secure site</div>
                                 </div>
                             </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Country *</label>
-                                <select name="country" required 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                    <option value="US">United States</option>
-                                    <option value="CA">Canada</option>
-                                    <option value="UK">United Kingdom</option>
-                                    <option value="AU">Australia</option>
-                                    <option value="DE">Germany</option>
-                                    <option value="FR">France</option>
-                                    <option value="ES">Spain</option>
-                                    <option value="IT">Italy</option>
-                                </select>
+                            <p class="text-sm text-blue-800">Click "Complete Booking" to continue with PayPal payment.</p>
+                        </div>
+                    </div>
+
+                    <!-- Bank Transfer Form (Hidden by default) -->
+                    <div id="bank-transfer-form" class="bg-white rounded-lg shadow-md p-6 payment-form-section hidden">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">Bank Transfer Instructions</h2>
+                        
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="font-medium">Amount to pay:</span>
+                                    <span class="font-semibold">KSH {{ number_format($total + 2.50, 2) }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="font-medium">Bank:</span>
+                                    <span>ConcertHub Bank</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="font-medium">Account Number:</span>
+                                    <span class="font-mono">1234567890</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="font-medium">Reference:</span>
+                                    <span class="font-mono text-xs">BOOKING_[Your Name]</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
+                                <strong>Important:</strong> Include your name as reference. Payment takes 1-3 business days to process.
                             </div>
                         </div>
                     </div>
+
 
                     <!-- Terms and Conditions -->
                     <div class="bg-white rounded-lg shadow-md p-6">
@@ -288,38 +411,175 @@
 
 @push('scripts')
 <script>
+    // Handle payment method switching
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentMethodInputs = document.querySelectorAll('.payment-method-input');
+        const mpesaForm = document.getElementById('mpesa-form');
+        const creditCardForm = document.getElementById('credit-card-form');
+        const paypalForm = document.getElementById('paypal-form');
+        const bankTransferForm = document.getElementById('bank-transfer-form');
+        
+        paymentMethodInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const method = this.value;
+                
+                // Hide all forms first
+                mpesaForm.classList.add('hidden');
+                creditCardForm.classList.add('hidden');
+                paypalForm.classList.add('hidden');
+                bankTransferForm.classList.add('hidden');
+                
+                // Update border colors for all payment method options
+                document.querySelectorAll('.payment-method-option label').forEach(label => {
+                    label.classList.remove('border-green-500', 'bg-green-50', 'border-purple-500', 'bg-purple-50', 'border-blue-500', 'bg-blue-50');
+                    label.classList.add('border-gray-200');
+                    label.querySelectorAll('i, div > div:first-child, div > div:last-child').forEach(el => {
+                        el.classList.remove('text-green-600', 'text-green-900', 'text-green-700', 'text-purple-600', 'text-purple-900', 'text-purple-700', 'text-blue-600', 'text-blue-900', 'text-blue-700');
+                        el.classList.add('text-gray-400', 'text-gray-700', 'text-gray-500');
+                    });
+                });
+                
+                // Show selected form and update styling
+                const selectedLabel = document.querySelector(`label[for="${this.id}"]`);
+                if (method === 'mpesa') {
+                    mpesaForm.classList.remove('hidden');
+                    selectedLabel.classList.remove('border-gray-200');
+                    selectedLabel.classList.add('border-green-500', 'bg-green-50');
+                    selectedLabel.querySelectorAll('i, div > div:first-child, div > div:last-child').forEach(el => {
+                        el.classList.remove('text-gray-400', 'text-gray-700', 'text-gray-500');
+                        if (el.tagName === 'I') {
+                            el.classList.add('text-green-600');
+                        } else if (el.parentElement.tagName === 'DIV' && el.parentElement.children[0] === el) {
+                            el.classList.add('text-green-900');
+                        } else {
+                            el.classList.add('text-green-700');
+                        }
+                    });
+                } else if (method === 'credit_card') {
+                    creditCardForm.classList.remove('hidden');
+                    selectedLabel.classList.remove('border-gray-200');
+                    selectedLabel.classList.add('border-purple-500', 'bg-purple-50');
+                    selectedLabel.querySelectorAll('i, div > div:first-child, div > div:last-child').forEach(el => {
+                        el.classList.remove('text-gray-400', 'text-gray-700', 'text-gray-500');
+                        if (el.tagName === 'I') {
+                            el.classList.add('text-purple-600');
+                        } else if (el.parentElement.tagName === 'DIV' && el.parentElement.children[0] === el) {
+                            el.classList.add('text-purple-900');
+                        } else {
+                            el.classList.add('text-purple-700');
+                        }
+                    });
+                } else if (method === 'paypal') {
+                    paypalForm.classList.remove('hidden');
+                    selectedLabel.classList.remove('border-gray-200');
+                    selectedLabel.classList.add('border-blue-500', 'bg-blue-50');
+                    selectedLabel.querySelectorAll('i, div > div:first-child, div > div:last-child').forEach(el => {
+                        el.classList.remove('text-gray-400', 'text-gray-700', 'text-gray-500');
+                        if (el.tagName === 'I') {
+                            el.classList.add('text-blue-600');
+                        } else if (el.parentElement.tagName === 'DIV' && el.parentElement.children[0] === el) {
+                            el.classList.add('text-blue-900');
+                        } else {
+                            el.classList.add('text-blue-700');
+                        }
+                    });
+                } else if (method === 'bank_transfer') {
+                    bankTransferForm.classList.remove('hidden');
+                    selectedLabel.classList.remove('border-gray-200');
+                    selectedLabel.classList.add('border-green-500', 'bg-green-50');
+                    selectedLabel.querySelectorAll('i, div > div:first-child, div > div:last-child').forEach(el => {
+                        el.classList.remove('text-gray-400', 'text-gray-700', 'text-gray-500');
+                        if (el.tagName === 'I') {
+                            el.classList.add('text-green-600');
+                        } else if (el.parentElement.tagName === 'DIV' && el.parentElement.children[0] === el) {
+                            el.classList.add('text-green-900');
+                        } else {
+                            el.classList.add('text-green-700');
+                        }
+                    });
+                }
+            });
+        });
+    });
+
     function completeBooking() {
         const form = document.getElementById('checkoutForm');
         const formData = new FormData(form);
+        const selectedPaymentMethod = formData.get('payment_method');
         
         // Basic validation
-        const requiredFields = ['customer_phone', 'card_number', 'expiry_date', 'cvv', 'cardholder_name', 'address', 'city', 'state', 'zip_code', 'country'];
+        let requiredFields = ['customer_phone'];
+        let isValid = true;
         
         // Add guest checkout fields if user is not authenticated
         @if(!Auth::check())
             requiredFields.push('customer_name', 'customer_email');
         @endif
         
-        let isValid = true;
+        // Add payment method specific fields
+        if (selectedPaymentMethod === 'mpesa') {
+            requiredFields.push('mpesa_phone', 'mpesa_phone_confirm');
+            
+            // Validate phone numbers match
+            const mpesaPhone = form.querySelector('[name="mpesa_phone"]').value;
+            const mpesaPhoneConfirm = form.querySelector('[name="mpesa_phone_confirm"]').value;
+            
+            if (mpesaPhone !== mpesaPhoneConfirm) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'M-Pesa phone numbers do not match.',
+                    confirmButtonColor: '#7c3aed'
+                });
+                form.querySelector('[name="mpesa_phone_confirm"]').classList.add('border-red-500');
+                isValid = false;
+            }
+            
+            // Validate phone format
+            const phoneRegex = /^(07[0-9]{8}|254[0-9]{9})$/;
+            if (!phoneRegex.test(mpesaPhone.replace(/\s+/g, ''))) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Phone Number',
+                    text: 'Please enter a valid M-Pesa phone number (07XXXXXXXX or 254XXXXXXXXX).',
+                    confirmButtonColor: '#7c3aed'
+                });
+                form.querySelector('[name="mpesa_phone"]').classList.add('border-red-500');
+                isValid = false;
+            }
+        } else if (selectedPaymentMethod === 'credit_card') {
+            requiredFields.push('card_number', 'expiry_date', 'cvv', 'cardholder_name');
+        }
         
+        // Validate all required fields
         requiredFields.forEach(field => {
             const input = form.querySelector(`[name="${field}"]`);
-            if (!input.value.trim()) {
+            if (input && !input.value.trim()) {
                 input.classList.add('border-red-500');
                 isValid = false;
-            } else {
+            } else if (input) {
                 input.classList.remove('border-red-500');
             }
         });
         
         const termsCheckbox = form.querySelector('[name="terms_accepted"]');
         if (!termsCheckbox.checked) {
-            alert('Please accept the Terms of Service to continue.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Terms Required',
+                text: 'Please accept Terms of Service to continue.',
+                confirmButtonColor: '#7c3aed'
+            });
             isValid = false;
         }
         
         if (!isValid) {
-            alert('Please fill in all required fields.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please fill in all required fields correctly.',
+                confirmButtonColor: '#7c3aed'
+            });
             return;
         }
         
@@ -327,7 +587,16 @@
         const button = document.querySelector('button[onclick="completeBooking()"]');
         const originalText = button.textContent;
         button.disabled = true;
-        button.textContent = 'Processing...';
+        
+        if (selectedPaymentMethod === 'mpesa') {
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Initiating M-Pesa...';
+        } else if (selectedPaymentMethod === 'credit_card') {
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing Card Payment...';
+        } else if (selectedPaymentMethod === 'paypal') {
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Redirecting to PayPal...';
+        } else {
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+        }
         
         // Submit form data to server
         fetch('{{ route("public.booking.process") }}', {
@@ -340,38 +609,75 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Booking completed successfully! You will receive a confirmation email shortly.');
-                window.location.href = data.redirect_url;
+                if (selectedPaymentMethod === 'mpesa') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'M-Pesa Initiated!',
+                        text: 'M-Pesa prompt sent! Please check your phone and enter your PIN to complete payment.',
+                        confirmButtonColor: '#10b981',
+                        timer: 3000,
+                        timerProgressBar: true
+                    }).then(() => {
+                        window.location.href = data.redirect_url;
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Booking Completed!',
+                        text: 'Booking completed successfully! You will receive a confirmation email shortly.',
+                        confirmButtonColor: '#10b981',
+                        timer: 3000,
+                        timerProgressBar: true
+                    }).then(() => {
+                        window.location.href = data.redirect_url;
+                    });
+                }
             } else {
-                alert('Booking failed: ' + data.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Booking Failed',
+                    text: data.message,
+                    confirmButtonColor: '#7c3aed'
+                });
                 button.disabled = false;
                 button.textContent = originalText;
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Network Error',
+                text: 'An error occurred. Please try again.',
+                confirmButtonColor: '#7c3aed'
+            });
             button.disabled = false;
             button.textContent = originalText;
         });
     }
     
     // Format card number input
-    document.querySelector('[name="card_number"]').addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-        if (formattedValue.length > 19) formattedValue = formattedValue.substr(0, 19);
-        e.target.value = formattedValue;
-    });
+    const cardNumberInput = document.querySelector('[name="card_number"]');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            if (formattedValue.length > 19) formattedValue = formattedValue.substr(0, 19);
+            e.target.value = formattedValue;
+        });
+    }
     
     // Format expiry date input
-    document.querySelector('[name="expiry_date"]').addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length >= 2) {
-            value = value.substring(0, 2) + '/' + value.substring(2, 4);
-        }
-        e.target.value = value;
-    });
+    const expiryDateInput = document.querySelector('[name="expiry_date"]');
+    if (expiryDateInput) {
+        expiryDateInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
 </script>
 @endpush
 @endsection

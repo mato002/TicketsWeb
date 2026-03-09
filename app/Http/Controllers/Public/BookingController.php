@@ -222,6 +222,7 @@ class BookingController extends Controller
         if (Auth::check()) {
             $request->validate([
                 'customer_phone' => 'required|string|max:20',
+                'payment_method' => 'required|string|in:mpesa,credit_card,paypal,bank_transfer',
                 'special_requests' => 'nullable|string|max:500',
             ]);
         } else {
@@ -229,9 +230,25 @@ class BookingController extends Controller
                 'customer_name' => 'required|string|max:255',
                 'customer_email' => 'required|email|max:255',
                 'customer_phone' => 'required|string|max:20',
+                'payment_method' => 'required|string|in:mpesa,credit_card,paypal,bank_transfer',
                 'create_account' => 'nullable|boolean',
                 'password' => 'required_if:create_account,1|string|min:8|confirmed',
                 'special_requests' => 'nullable|string|max:500',
+            ]);
+        }
+
+        // Validate payment method specific fields
+        if ($request->payment_method === 'mpesa') {
+            $request->validate([
+                'mpesa_phone' => 'required|string|min:10|max:15',
+                'mpesa_phone_confirm' => 'required|string|same:mpesa_phone',
+            ]);
+        } elseif ($request->payment_method === 'credit_card') {
+            $request->validate([
+                'card_number' => 'required|string',
+                'expiry_date' => 'required|string',
+                'cvv' => 'required|string',
+                'cardholder_name' => 'required|string',
             ]);
         }
 
@@ -296,11 +313,17 @@ class BookingController extends Controller
                 'customer_email' => $request->customer_email ?? $user->email,
                 'customer_phone' => $request->customer_phone,
                 'status' => 'pending',
-                'payment_method' => 'pending',
+                'payment_method' => $request->payment_method,
                 'booking_date' => now(),
                 'special_requests' => $request->special_requests,
                 'is_guest_booking' => !Auth::check(),
             ]);
+
+            // Store M-Pesa phone number if provided
+            if ($request->payment_method === 'mpesa') {
+                $booking->mpesa_phone = $request->mpesa_phone;
+                $booking->save();
+            }
 
             // Process event tickets
             foreach ($cart as $item) {
@@ -353,14 +376,37 @@ class BookingController extends Controller
             Session::forget('cart');
             Session::forget('accommodation_booking');
 
-            // Store booking ID for confirmation page (fallback)
-            Session::put('booking_id', $booking->id);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Booking created successfully! Please complete your payment.',
-                'redirect_url' => route('payment.show', $booking)
-            ]);
+            // Process payment based on method
+            if ($request->payment_method === 'mpesa') {
+                // Initiate M-Pesa payment
+                $mpesaService = app(\App\Services\MpesaService::class);
+                $mpesaResult = $mpesaService->initiatePayment($booking, $request->mpesa_phone);
+                
+                if ($mpesaResult['success']) {
+                    $booking->update([
+                        'transaction_id' => $mpesaResult['transaction_id'],
+                        'payment_details' => json_encode($mpesaResult)
+                    ]);
+                    
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'M-Pesa payment initiated! Please check your phone for the PIN prompt.',
+                        'redirect_url' => route('payment.show', $booking)
+                    ]);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'M-Pesa payment failed: ' . $mpesaResult['message']
+                    ], 400);
+                }
+            } else {
+                // For other payment methods, redirect to payment page
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Booking created successfully! Please complete your payment.',
+                    'redirect_url' => route('payment.show', $booking)
+                ]);
+            }
 
         } catch (\Exception $e) {
             DB::rollback();

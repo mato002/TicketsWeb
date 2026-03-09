@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->boolean('is_guest_booking')->default(false)->after('special_requests');
+            $table->string('mpesa_phone')->nullable()->after('mpesa_receipt');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->dropColumn('is_guest_booking');
+            $table->dropColumn('mpesa_phone');
         });
     }
 };

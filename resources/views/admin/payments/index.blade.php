@@ -25,13 +25,14 @@
 
     <!-- Statistics Cards -->
     <div class="row mb-4">
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card bg-primary text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4 class="card-title">{{ $totalTransactions }}</h4>
-                            <p class="card-text">Total Transactions</p>
+                            <p class="card-text d-none d-md-block">Total Transactions</p>
+                            <p class="card-text d-md-none">Transactions</p>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-exchange-alt fa-2x"></i>
@@ -40,13 +41,14 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card bg-success text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4 class="card-title">KSH {{ number_format($totalRevenue, 2) }}</h4>
-                            <p class="card-text">Total Revenue</p>
+                            <p class="card-text d-none d-md-block">Total Revenue</p>
+                            <p class="card-text d-md-none">Revenue</p>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-dollar-sign fa-2x"></i>
@@ -55,13 +57,14 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card bg-warning text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4 class="card-title">{{ $pendingTransactions }}</h4>
-                            <p class="card-text">Pending</p>
+                            <p class="card-text d-none d-md-block">Pending</p>
+                            <p class="card-text d-md-none">Pending</p>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-clock fa-2x"></i>
@@ -70,13 +73,14 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card bg-info text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4 class="card-title">{{ $refundedTransactions }}</h4>
-                            <p class="card-text">Refunded</p>
+                            <p class="card-text d-none d-md-block">Refunded</p>
+                            <p class="card-text d-md-none">Refunded</p>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-undo fa-2x"></i>
@@ -93,48 +97,50 @@
             <h5 class="card-title mb-0">Filters</h5>
         </div>
         <div class="card-body">
-            <form method="GET" action="{{ route('admin.payments.index') }}" class="row g-3">
-                <div class="col-md-2">
-                    <label for="status" class="form-label">Status</label>
-                    <select name="status" id="status" class="form-select">
-                        <option value="">All Status</option>
-                        <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Completed</option>
-                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed</option>
-                        <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="payment_method" class="form-label">Payment Method</label>
-                    <select name="payment_method" id="payment_method" class="form-select">
-                        <option value="">All Methods</option>
-                        <option value="credit_card" {{ request('payment_method') == 'credit_card' ? 'selected' : '' }}>Credit Card</option>
-                        <option value="mpesa" {{ request('payment_method') == 'mpesa' ? 'selected' : '' }}>M-Pesa</option>
-                        <option value="paypal" {{ request('payment_method') == 'paypal' ? 'selected' : '' }}>PayPal</option>
-                        <option value="bank_transfer" {{ request('payment_method') == 'bank_transfer' ? 'selected' : '' }}>Bank Transfer</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="date_from" class="form-label">From Date</label>
-                    <input type="date" name="date_from" id="date_from" class="form-control" value="{{ request('date_from') }}">
-                </div>
-                <div class="col-md-2">
-                    <label for="date_to" class="form-label">To Date</label>
-                    <input type="date" name="date_to" id="date_to" class="form-control" value="{{ request('date_to') }}">
-                </div>
-                <div class="col-md-2">
-                    <label for="search" class="form-label">Search</label>
-                    <input type="text" name="search" id="search" class="form-control" placeholder="Booking ID, Email..." value="{{ request('search') }}">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">&nbsp;</label>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-filter me-2"></i>Filter
-                        </button>
-                        <a href="{{ route('admin.payments.index') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-times me-2"></i>Clear
-                        </a>
+            <form method="GET" action="{{ route('admin.payments.index') }}">
+                <div class="row g-3">
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <label for="status" class="form-label">Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">All Status</option>
+                            <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Completed</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed</option>
+                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <label for="payment_method" class="form-label">Payment Method</label>
+                        <select name="payment_method" id="payment_method" class="form-select">
+                            <option value="">All Methods</option>
+                            <option value="credit_card" {{ request('payment_method') == 'credit_card' ? 'selected' : '' }}>Credit Card</option>
+                            <option value="mpesa" {{ request('payment_method') == 'mpesa' ? 'selected' : '' }}>M-Pesa</option>
+                            <option value="paypal" {{ request('payment_method') == 'paypal' ? 'selected' : '' }}>PayPal</option>
+                            <option value="bank_transfer" {{ request('payment_method') == 'bank_transfer' ? 'selected' : '' }}>Bank Transfer</option>
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label for="date_from" class="form-label">From Date</label>
+                        <input type="date" name="date_from" id="date_from" class="form-control" value="{{ request('date_from') }}">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label for="date_to" class="form-label">To Date</label>
+                        <input type="date" name="date_to" id="date_to" class="form-control" value="{{ request('date_to') }}">
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <label for="search" class="form-label">Search</label>
+                        <input type="text" name="search" id="search" class="form-control" placeholder="Booking ID, Email..." value="{{ request('search') }}">
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary flex-fill">
+                                <i class="fas fa-filter me-2"></i>Filter
+                            </button>
+                            <a href="{{ route('admin.payments.index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Clear
+                            </a>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -151,35 +157,36 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>Transaction ID</th>
-                            <th>Booking Reference</th>
-                            <th>Customer</th>
-                            <th>Event</th>
+                            <th class="d-none d-md-table-cell">Transaction ID</th>
+                            <th>Booking</th>
+                            <th class="d-none d-lg-table-cell">Customer</th>
+                            <th class="d-none d-xl-table-cell">Event</th>
                             <th>Amount</th>
-                            <th>Method</th>
+                            <th class="d-none d-md-table-cell">Method</th>
                             <th>Status</th>
-                            <th>Date</th>
+                            <th class="d-none d-lg-table-cell">Date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($transactions as $transaction)
                             <tr>
-                                <td>
-                                    <span class="font-monospace">{{ $transaction->transaction_id ?? $transaction->mpesa_receipt ?? 'N/A' }}</span>
+                                <td class="d-none d-md-table-cell">
+                                    <span class="font-monospace text-truncate d-block" style="max-width: 120px;">{{ $transaction->transaction_id ?? $transaction->mpesa_receipt ?? 'N/A' }}</span>
                                 </td>
                                 <td>
                                     <a href="{{ route('admin.bookings.show', $transaction->id) }}" class="text-decoration-none">
-                                        {{ $transaction->booking_reference }}
+                                        <span class="d-block fw-bold">{{ $transaction->booking_reference }}</span>
+                                        <small class="text-muted d-md-none">{{ $transaction->customer_name }}</small>
                                     </a>
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <div>
                                         <strong>{{ $transaction->customer_name }}</strong><br>
                                         <small class="text-muted">{{ $transaction->customer_email }}</small>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="d-none d-xl-table-cell">
                                     <div>
                                         <strong>{{ $transaction->event->title ?? 'N/A' }}</strong><br>
                                         <small class="text-muted">{{ $transaction->ticket_quantity }} ticket(s)</small>
@@ -188,7 +195,7 @@
                                 <td>
                                     <span class="fw-bold">KSH {{ number_format($transaction->total_amount, 2) }}</span>
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <span class="badge bg-light text-dark">
                                         @switch($transaction->payment_method ?? 'credit_card')
                                             @case('credit_card')
@@ -226,7 +233,7 @@
                                             <span class="badge bg-secondary">{{ $transaction->status }}</span>
                                     @endswitch
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <div>
                                         <div>{{ $transaction->created_at->format('M j, Y') }}</div>
                                         <small class="text-muted">{{ $transaction->created_at->format('h:i A') }}</small>
@@ -237,7 +244,7 @@
                                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                             <i class="fas fa-ellipsis-v"></i>
                                         </button>
-                                        <ul class="dropdown-menu">
+                                        <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
                                                 <a class="dropdown-item" href="#" onclick="viewTransactionDetails({{ $transaction->id }})">
                                                     <i class="fas fa-eye me-2"></i>View Details
@@ -281,11 +288,15 @@
             </div>
             
             <!-- Pagination -->
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <div>
-                    Showing {{ $transactions->firstItem() }} to {{ $transactions->lastItem() }} of {{ $transactions->total() }} entries
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 gap-3">
+                <div class="text-center text-md-start">
+                    <small class="text-muted">
+                        Showing {{ $transactions->firstItem() }} to {{ $transactions->lastItem() }} of {{ $transactions->total() }} entries
+                    </small>
                 </div>
-                {{ $transactions->links() }}
+                <div class="d-flex justify-content-center">
+                    {{ $transactions->links() }}
+                </div>
             </div>
         </div>
     </div>

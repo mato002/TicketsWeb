@@ -1,25 +1,23 @@
 @extends('layouts.public')
 
-@section('title', 'Privacy Policy - ConcertHub')
-@section('description', 'Learn how ConcertHub protects your privacy and handles your personal information.')
+@section('title', 'Privacy Policy - TwendeeTickets')
+@section('description', 'Learn how TwendeeTickets protects your privacy and handles your personal information.')
 
 @section('content')
-<div class="bg-gradient-to-r from-purple-600 to-blue-600 py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center">
-            <h1 class="text-4xl font-bold text-white mb-4">Privacy Policy</h1>
-            <p class="text-xl text-purple-100">Last updated: {{ date('F d, Y') }}</p>
-        </div>
-    </div>
-</div>
-
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="bg-white rounded-lg shadow-md p-8 prose prose-lg max-w-none">
+<div class="bg-gray-50 min-h-screen">
+    <!-- Hero Section -->
+    <section class="hero-section relative text-white py-16" style="background-image: url('https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop');">
+        <!-- Dark Overlay -->
+        <div class="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
         
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
-            <p class="text-gray-600 mb-4">
-                At ConcertHub, we respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service.
+        <!-- Hero Content -->
+        <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">Privacy Policy</h1>
+                <p class="text-xl md:text-2xl text-purple-100">Your privacy matters to us</p>
+            </div>
+        </div>
+    </section>
             </p>
             <p class="text-gray-600 mb-4">
                 Please read this Privacy Policy carefully. By using ConcertHub, you agree to the collection and use of information in accordance with this policy.
