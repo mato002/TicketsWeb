@@ -1,9 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Payment - Booking #' . $booking->booking_reference)
+@section('title', 'Payment - TwendeeTickets')
 @section('description', 'Complete your payment for booking #' . $booking->booking_reference)
 
 @section('content')
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
 <div class="bg-gray-50 min-h-screen py-8">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Progress Steps -->

@@ -250,8 +250,10 @@ class AdminBookingController extends Controller
                 }
             }
             
-            // Cancel the booking
-            $booking->cancel();
+            // Update booking status
+            $booking->status = 'cancelled';
+            $booking->cancelled_at = now();
+            $booking->save();
 
             DB::commit();
 
@@ -260,6 +262,85 @@ class AdminBookingController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             return back()->withErrors(['error' => 'An error occurred while cancelling the booking. Please try again.']);
+        }
+    }
+
+    /**
+     * Resend ticket email for a booking
+     */
+    public function resendTicket(Booking $booking)
+    {
+        try {
+            // Check if booking has tickets
+            if ($booking->tickets->isEmpty()) {
+                return back()->with('error', 'No tickets found for this booking.');
+            }
+
+            // Generate tickets if they don't exist
+            if ($booking->tickets->isEmpty()) {
+                $ticketService = new \App\Services\TicketService();
+                $tickets = $ticketService->generateTicketsForBooking($booking);
+            } else {
+                $tickets = $booking->tickets;
+            }
+
+            // Send ticket emails for each ticket
+            $sentCount = 0;
+            foreach ($tickets as $ticket) {
+                try {
+                    \Illuminate\Support\Facades\Mail::to($booking->customer_email)
+                        ->send(new \App\Mail\TicketMail($ticket));
+                    $sentCount++;
+                } catch (\Exception $e) {
+                    \Log::error('Failed to send ticket email: ' . $e->getMessage(), [
+                        'ticket_id' => $ticket->id,
+                        'booking_id' => $booking->id
+                    ]);
+                }
+            }
+
+            if ($sentCount > 0) {
+                return back()->with('success', "Successfully resent {$sentCount} ticket(s) to {$booking->customer_email}!");
+            } else {
+                return back()->with('error', 'Failed to send ticket emails. Please check email configuration.');
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('Error resending tickets: ' . $e->getMessage(), [
+                'booking_id' => $booking->id,
+                'exception' => $e
+            ]);
+            return back()->withErrors(['error' => 'An error occurred while resending tickets. Please try again.']);
+        }
+    }
+
+    /**
+     * Send test ticket to admin email
+     */
+    public function sendTestTicket(Booking $booking)
+    {
+        try {
+            // Check if booking has tickets
+            if ($booking->tickets->isEmpty()) {
+                return back()->with('error', 'No tickets found for this booking.');
+            }
+
+            // Get the first ticket
+            $ticket = $booking->tickets->first();
+
+            // Send test email to admin
+            $adminEmail = config('mail.from.address');
+            \Illuminate\Support\Facades\Mail::to($adminEmail)
+                ->send(new \App\Mail\TicketMail($ticket));
+
+            return back()->with('success', "Test ticket sent to {$adminEmail}!");
+
+        } catch (\Exception $e) {
+            \Log::error('Error sending test ticket: ' . $e->getMessage(), [
+                'booking_id' => $booking->id,
+                'exception' => $e
+            ]);
+            return back()->withErrors(['error' => 'An error occurred while sending test ticket. Please try again.']);
         }
     }
 }

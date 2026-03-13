@@ -1,22 +1,24 @@
 @extends('layouts.public')
 
-@section('title', 'Shopping Cart - ConcertHub')
+@section('title', 'Shopping Cart - TwendeeTickets')
 @section('description', 'Review your concert tickets and proceed to checkout.')
 
 @section('content')
-<div class="bg-gray-50 min-h-screen py-8">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Progress Steps -->
-        <div class="mb-8">
-            <div class="flex items-center justify-center space-x-8">
-                <div class="flex items-center">
-                    <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
+<div class="bg-gray-50 min-h-screen py-8" style="background-image: url('https://images.unsplash.com/photo-1556742049-0cfed4f6a458?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=60'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div class="bg-white bg-opacity-95 backdrop-blur-sm">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Progress Steps -->
+            <div class="mb-8">
+                <div class="flex items-center justify-center space-x-8">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                            <i class="fas fa-check text-white"></i>
+                        </div>
+                        <span class="ml-2 text-green-500 font-medium">Select Tickets</span>
                     </div>
-                    <span class="ml-2 text-green-500 font-medium">Select Tickets</span>
-                </div>
                 <div class="w-16 h-0.5 bg-gray-300"></div>
                 <div class="flex items-center">
                     <div class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">2</div>
@@ -24,8 +26,13 @@
                 </div>
                 <div class="w-16 h-0.5 bg-gray-300"></div>
                 <div class="flex items-center">
-                    <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-semibold">3</div>
-                    <span class="ml-2 text-gray-500">Checkout</span>
+                    <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">3</div>
+                    <span class="ml-2 text-orange-500 font-medium">Add Transport</span>
+                </div>
+                <div class="w-16 h-0.5 bg-gray-300"></div>
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">4</div>
+                    <span class="ml-2 text-green-600 font-medium">Checkout</span>
                 </div>
             </div>
         </div>
@@ -156,6 +163,10 @@
                                class="w-full bg-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors text-center block">
                                 Add Accommodation
                             </a>
+                            <a href="{{ route('public.booking.transport') }}" 
+                               class="w-full bg-orange-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-orange-600 transition-colors text-center block">
+                                Add Transport
+                            </a>
                             <a href="{{ route('public.booking.checkout') }}" 
                                class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors text-center block">
                                 Proceed to Checkout
@@ -166,7 +177,7 @@
                             <p>• All sales are final</p>
                             <p>• Processing fee applies to all orders</p>
                             <p>• Tickets will be sent to your email</p>
-                            <p>• You can add accommodation in the next step</p>
+                            <p>• You can add accommodation and transport in next steps</p>
                         </div>
                     </div>
                 </div>

@@ -1,23 +1,25 @@
 @extends('layouts.auth')
 
-@section('title', 'Sign Up - ConcertHub')
-@section('description', 'Create your ConcertHub account to start booking amazing concerts, shows, and events while managing your reservations.')
+@section('title', 'Sign Up - TwendeeTickets')
+@section('description', 'Create your TwendeeTickets account to start booking amazing concerts, shows, and events while managing your reservations.')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-        <div class="bg-white rounded-2xl shadow-2xl p-8">
-            <!-- Header -->
-            <div class="text-center mb-8">
-                <div class="flex items-center justify-center mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/>
-                        </svg>
-                    </div>
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
+<div class="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" style="background-image: url('https://images.unsplash.com/photo-1521735603089-85a7b952f15?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=60'); background-size: cover; background-position: center;">
+    <div class="bg-black bg-opacity-50 backdrop-blur-sm">
+        <div class="max-w-md w-full space-y-8 py-12">
+            <div class="bg-white bg-opacity-95 backdrop-blur-lg rounded-2xl shadow-2xl p-8">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-user-plus text-white text-xl"></i>
+                        </div>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-900">Join ConcertHub</h2>
-                <p class="mt-2 text-gray-600">Create your account and start your musical journey</p>
+                <h2 class="text-3xl font-black text-gray-900">Join TwendeeTickets</h2>
+                <p class="mt-2 text-gray-600">Create your account and start your event journey</p>
             </div>
 
             <!-- Registration Form -->

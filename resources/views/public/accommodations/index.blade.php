@@ -1,13 +1,20 @@
 @extends('layouts.public')
 
-@section('title', 'Browse Accommodations - ConcertHub')
+@section('title', 'Browse Accommodations - TwendeeTickets')
 @section('description', 'Find and book the perfect accommodation near your event. Browse through hotels, apartments, and more.')
 
 @section('content')
-<div class="bg-gradient-to-r from-green-600 to-blue-600 text-white py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-4xl font-bold mb-4">Find Your Perfect Stay</h1>
-        <p class="text-xl text-green-100">Book comfortable accommodations near your favorite venues</p>
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
+<div class="bg-gradient-to-r from-green-600 to-blue-600 text-white py-12" style="background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099925b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=60'); background-size: cover; background-position: center;">
+    <div class="bg-black bg-opacity-40 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <h1 class="text-4xl font-black text-white mb-4">
+                <i class="fas fa-hotel text-yellow-300"></i> Find Your Perfect Stay
+            </h1>
+            <p class="text-xl text-green-100">Book comfortable accommodations near your favorite venues</p>
+        </div>
     </div>
 </div>
 

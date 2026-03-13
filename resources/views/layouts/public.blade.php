@@ -8,6 +8,14 @@
     <title>@yield('title', 'TwendeeTickets - Your Ultimate Event Booking Experience')</title>
     <meta name="description" content="@yield('description', 'Discover and book amazing events with ease. Find the best sports, music festivals, comedy, car shows, travel, hiking, art, and gallery events, secure your tickets, and book nearby accommodation all in one place.')">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/logo/logo.svg') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo/logo.svg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo/logo.jpeg') }}">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdL79l5kcAcKXQIZ8g07GqNH1RiioK6NjVsA4p6qHNzJb2LzBYYhFsWjRWKgZ/8JvLl6ye8iOk7tUQk4=" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
@@ -474,9 +482,17 @@
                             <a href="#" class="block px-4 py-3 text-sm text-black hover:bg-purple-50 hover:text-purple-600 transition-colors">
                                 <div class="flex items-center space-x-3">
                                     <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1"></path>
                                     </svg>
                                     <span>Payment Plans</span>
+                                </div>
+                            </a>
+                            <a href="{{ route('public.transport.index') }}" class="block px-4 py-3 text-sm text-black hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v5a2 2 0 002 2h6m-6 0l-2 2m2 2l2-2m0 0l2 2m-2 2v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span>Transport Services</span>
                                 </div>
                             </a>
                         </div>
@@ -598,6 +614,7 @@
         <div class="px-4 py-3 space-y-2">
             <a href="{{ route('public.home') }}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium">Home</a>
             <a href="{{ route('public.events.index') }}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium">Events</a>
+            <a href="{{ route('public.transport.index') }}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium">Transport</a>
             <a href="{{ route('public.help.index') }}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium">Help</a>
             
             @auth

@@ -3,6 +3,9 @@
 @section('title', 'About Us - TwendeeTickets')
 
 @section('content')
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
 <div class="bg-gray-50 min-h-screen">
     <!-- Hero Section -->
     <section class="hero-section relative text-white py-16" style="background-image: url('https://images.pexels.com/photos/3184388/pexels-photo-3184388.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop');">

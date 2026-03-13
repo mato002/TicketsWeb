@@ -19,6 +19,10 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ConcertSeeder::class,
             AccommodationSeeder::class,
+            VehicleSeeder::class,
+            RouteSeeder::class,
+            PickupPointSeeder::class,
+            TransportScheduleSeeder::class,
         ]);
     }
 }

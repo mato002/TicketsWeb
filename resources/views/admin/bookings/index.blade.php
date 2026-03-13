@@ -152,6 +152,27 @@
                                             </form>
                                         @endif
                                         
+                                        <!-- Resend Ticket Button -->
+                                        @if(in_array($booking->status, ['confirmed', 'completed']) && $booking->tickets->isNotEmpty())
+                                            <form method="POST" action="{{ route('admin.bookings.resend-ticket', $booking) }}" class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-outline-info" title="Resend Ticket"
+                                                        onclick="event.preventDefault(); confirmResendTicket(this);">
+                                                    <i class="fas fa-envelope"></i>
+                                                </button>
+                                            </form>
+                                        @endif
+                                        
+                                        <!-- Send Test Ticket Button -->
+                                        @if($booking->tickets->isNotEmpty())
+                                            <form method="POST" action="{{ route('admin.bookings.send-test-ticket', $booking) }}" class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary" title="Send Test Ticket to Admin">
+                                                    <i class="fas fa-vial"></i>
+                                                </button>
+                                            </form>
+                                        @endif
+                                        
                                         <form method="POST" action="{{ route('admin.bookings.destroy', $booking) }}" class="d-inline">
                                             @csrf
                                             @method('DELETE')
@@ -212,6 +233,22 @@ function deleteBooking(form) {
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
         confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });
+}
+
+function confirmResendTicket(form) {
+    Swal.fire({
+        title: 'Resend Ticket?',
+        text: "This will resend the ticket email to the customer. Are you sure?",
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, resend it!'
     }).then((result) => {
         if (result.isConfirmed) {
             form.submit();

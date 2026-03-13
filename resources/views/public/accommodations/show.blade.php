@@ -1,9 +1,12 @@
 @extends('layouts.public')
 
-@section('title', $accommodation->name . ' - ConcertHub')
+@section('title', $accommodation->name . ' - TwendeeTickets')
 @section('description', $accommodation->description ? Str::limit($accommodation->description, 160) : 'Book your stay at ' . $accommodation->name . ' in ' . $accommodation->city . '. ' . ucfirst($accommodation->type) . ' accommodation with great amenities.')
 
 @section('content')
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
 <div class="bg-gray-50 min-h-screen">
     <!-- Accommodation Header -->
     <div class="bg-white shadow-sm">

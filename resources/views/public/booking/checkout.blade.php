@@ -1,22 +1,24 @@
 @extends('layouts.public')
 
-@section('title', 'Checkout - ConcertHub')
+@section('title', 'Checkout - TwendeeTickets')
 @section('description', 'Complete your concert booking and accommodation reservation.')
 
 @section('content')
-<div class="bg-gray-50 min-h-screen py-8">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Progress Steps -->
-        <div class="mb-8">
-            <div class="flex items-center justify-center space-x-8">
-                <div class="flex items-center">
-                    <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                        </svg>
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
+<div class="bg-gray-50 min-h-screen py-8" style="background-image: url('https://images.unsplash.com/photo-1554993057-53e179e801e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=60'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div class="bg-white bg-opacity-95 backdrop-blur-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Progress Steps -->
+            <div class="mb-8">
+                <div class="flex items-center justify-center space-x-8">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                            <i class="fas fa-check text-white"></i>
+                        </div>
+                        <span class="ml-2 text-green-500 font-medium">Select Tickets</span>
                     </div>
-                    <span class="ml-2 text-green-500 font-medium">Select Tickets</span>
-                </div>
                 <div class="w-16 h-0.5 bg-green-500"></div>
                 <div class="flex items-center">
                     <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">

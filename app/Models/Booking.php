@@ -50,6 +50,16 @@ class Booking extends Model
         return $this->hasMany(BookingItem::class);
     }
 
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    public function transportBookings(): HasMany
+    {
+        return $this->hasMany(TransportBooking::class);
+    }
+
     // Scopes
     public function scopePending($query)
     {
@@ -123,6 +133,44 @@ class Booking extends Model
         $this->update([
             'status' => 'completed'
         ]);
+    }
+
+    public function generateAndSendTickets()
+    {
+        try {
+            $ticketService = new \App\Services\TicketService();
+            $emailService = new \App\Services\EmailService();
+            
+            // Generate tickets for this booking
+            $tickets = $ticketService->generateTicketsForBooking($this);
+            
+            // Send confirmation email with tickets
+            $emailResult = $emailService->sendBookingConfirmationWithTickets($this);
+            
+            \Log::info('Tickets generated and emails sent', [
+                'booking_id' => $this->id,
+                'tickets_generated' => count($tickets),
+                'confirmation_sent' => $emailResult['confirmation_sent'],
+                'tickets_sent' => $emailResult['tickets_sent']
+            ]);
+            
+            return [
+                'success' => true,
+                'tickets' => $tickets,
+                'email_result' => $emailResult
+            ];
+            
+        } catch (\Exception $e) {
+            \Log::error('Failed to generate tickets or send emails', [
+                'booking_id' => $this->id,
+                'error' => $e->getMessage()
+            ]);
+            
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
     }
 
     public static function generateBookingReference()

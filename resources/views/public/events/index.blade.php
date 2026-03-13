@@ -4,15 +4,22 @@
 @section('description', 'Browse through hundreds of upcoming events including sports, music festivals, comedy, car shows, travel, hiking, art, and gallery events. Find your perfect event by type, location, or date with TwendeeTickets.')
 
 @section('content')
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
 <div class="bg-gray-50 min-h-screen" x-data="{ mobileFiltersOpen: false }">
     <!-- Header Section -->
-    <div class="bg-white shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="text-center">
-                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Discover Amazing Events</h1>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                    Browse through our curated collection of upcoming events including sports, music, comedy, art, and more to find your perfect experience
-                </p>
+    <div class="bg-white shadow-sm" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=60'); background-size: cover; background-position: center;">
+        <div class="bg-white bg-opacity-95 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="text-center">
+                    <h1 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+                        <i class="fas fa-calendar-alt text-purple-600"></i> Discover Amazing Events
+                    </h1>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Browse through our curated collection of upcoming events including sports, music, comedy, art, and more to find your perfect experience
+                    </p>
+                </div>
             </div>
         </div>
     </div>

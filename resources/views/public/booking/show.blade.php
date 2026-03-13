@@ -1,18 +1,24 @@
 @extends('layouts.public')
 
-@section('title', 'Book Tickets - ' . $event->title)
+@section('title', 'Book Tickets - TwendeeTickets')
 @section('description', 'Book your tickets for ' . $event->title . ' by ' . $event->artist . ' on ' . $event->event_date->format('M j, Y') . '.')
 
 @section('content')
-<div class="bg-gray-50 min-h-screen py-8">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Progress Steps -->
-        <div class="mb-8">
-            <div class="flex items-center justify-center space-x-8">
-                <div class="flex items-center">
-                    <div class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">1</div>
-                    <span class="ml-2 text-purple-600 font-medium">Select Tickets</span>
-                </div>
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
+<div class="bg-gray-50 min-h-screen py-8" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=60'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div class="bg-white bg-opacity-95 backdrop-blur-sm">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Progress Steps -->
+            <div class="mb-8">
+                <div class="flex items-center justify-center space-x-8">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                            <i class="fas fa-ticket-alt text-white"></i>
+                        </div>
+                        <span class="ml-2 text-purple-600 font-medium">Select Tickets</span>
+                    </div>
                 <div class="w-16 h-0.5 bg-gray-300"></div>
                 <div class="flex items-center">
                     <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-semibold">2</div>

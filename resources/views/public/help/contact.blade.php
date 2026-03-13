@@ -1,18 +1,24 @@
 @extends('layouts.public')
 
-@section('title', 'Contact Us - ConcertHub')
+@section('title', 'Contact Us - TwendeeTickets')
 @section('description', 'Get in touch with our support team for help with your concert, show, and event bookings and any questions you may have.')
 
 @section('content')
-<div class="bg-gray-50 min-h-screen py-8">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-900 mb-4">Contact Us</h1>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                We're here to help! Reach out to our support team for assistance with your concert, show, and event bookings or any questions.
-            </p>
-        </div>
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
+<div class="bg-gray-50 min-h-screen py-8" style="background-image: url('https://images.unsplash.com/photo-1516325508429-8084d164436?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=60'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div class="bg-white bg-opacity-95 backdrop-blur-sm">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-black text-gray-900 mb-4">
+                    <i class="fas fa-headset text-purple-600"></i> Contact Us
+                </h1>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    We're here to help! Reach out to our support team for assistance with your concert, show, and event bookings or any questions.
+                </p>
+            </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Contact Form -->

@@ -5,14 +5,18 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Accommodation;
+use App\Models\TransportSchedule;
+use App\Models\TransportBooking;
 use App\Models\Booking;
 use App\Models\BookingItem;
 use App\Models\User;
+use App\Services\TicketService;
+use App\Services\EmailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
@@ -177,10 +181,66 @@ class BookingController extends Controller
         return redirect()->route('public.booking.checkout')->with('success', 'Accommodation added to booking!');
     }
 
+    public function transport()
+    {
+        try {
+            $cart = Session::get('cart', []);
+            
+            if (empty($cart)) {
+                return redirect()->route('public.events.index')->with('error', 'Your cart is empty!');
+            }
+
+            // Get event IDs from cart
+            $eventIds = collect($cart)->pluck('event_id');
+            
+            // Get transport schedules for these events
+            $schedules = TransportSchedule::with(['event', 'vehicle', 'route', 'pickupPoint'])
+                ->whereIn('event_id', $eventIds)
+                ->active()
+                ->available()
+                ->where('departure_time', '>', now())
+                ->orderBy('departure_time')
+                ->get()
+                ->groupBy('event_id');
+
+            return view('public.booking.transport', compact('schedules'));
+        } catch (\Exception $e) {
+            \Log::error('Transport page error: ' . $e->getMessage());
+            return redirect()->route('public.events.index')->with('error', 'Unable to load transport options. Please try again.');
+        }
+    }
+
+    public function addTransport(Request $request, TransportSchedule $schedule)
+    {
+        $request->validate([
+            'passengers_count' => 'required|integer|min:1|max:' . $schedule->remaining_seats,
+            'special_requests' => 'nullable|string|max:1000'
+        ]);
+
+        $totalPrice = $schedule->price * $request->passengers_count;
+
+        $transportBooking = [
+            'schedule_id' => $schedule->id,
+            'passengers_count' => $request->passengers_count,
+            'special_requests' => $request->special_requests,
+            'pickup_point_name' => $schedule->pickupPoint->name,
+            'dropoff_point_name' => $schedule->route->end_location,
+            'departure_time' => $schedule->departure_time->format('Y-m-d H:i:s'),
+            'arrival_time' => $schedule->arrival_time->format('Y-m-d H:i:s'),
+            'price_per_person' => $schedule->price,
+            'total_price' => $totalPrice,
+        ];
+
+        Session::put('transport_booking', $transportBooking);
+
+        return redirect()->route('public.booking.checkout')->with('success', 'Transport added to booking!');
+    }
+
     public function checkout()
     {
         $cart = Session::get('cart', []);
         $accommodationBooking = Session::get('accommodation_booking');
+        $transportBooking = Session::get('transport_booking');
 
         if (empty($cart)) {
             return redirect()->route('public.events.index')->with('error', 'Your cart is empty!');
@@ -209,11 +269,17 @@ class BookingController extends Controller
             $total += $accommodationBooking['total_price'];
         }
 
+        $transportSchedule = null;
+        if ($transportBooking) {
+            $transportSchedule = TransportSchedule::find($transportBooking['schedule_id']);
+            $total += $transportBooking['total_price'];
+        }
+
         // Check if user is authenticated, otherwise show guest checkout
         $user = Auth::user();
         $isGuest = !$user;
 
-        return view('public.booking.checkout', compact('events', 'accommodation', 'accommodationBooking', 'total', 'user', 'isGuest'));
+        return view('public.booking.checkout', compact('events', 'accommodation', 'accommodationBooking', 'transportSchedule', 'transportBooking', 'total', 'user', 'isGuest'));
     }
 
     public function processBooking(Request $request)
@@ -254,6 +320,7 @@ class BookingController extends Controller
 
         $cart = Session::get('cart', []);
         $accommodationBooking = Session::get('accommodation_booking');
+        $transportBooking = Session::get('transport_booking');
 
         if (empty($cart)) {
             return response()->json([
@@ -302,6 +369,9 @@ class BookingController extends Controller
             }
             if ($accommodationBooking) {
                 $totalAmount += $accommodationBooking['total_price'];
+            }
+            if ($transportBooking) {
+                $totalAmount += $transportBooking['total_price'];
             }
 
             // Create booking record
@@ -370,11 +440,52 @@ class BookingController extends Controller
                 }
             }
 
+            // Process transport if selected
+            if ($transportBooking) {
+                $transportSchedule = TransportSchedule::find($transportBooking['schedule_id']);
+                if ($transportSchedule) {
+                    // Create transport booking
+                    $transportBookingRecord = TransportBooking::create([
+                        'booking_id' => $booking->id,
+                        'transport_schedule_id' => $transportSchedule->id,
+                        'user_id' => $user->id,
+                        'pickup_point_name' => $transportBooking['pickup_point_name'],
+                        'dropoff_point_name' => $transportBooking['dropoff_point_name'],
+                        'passengers_count' => $transportBooking['passengers_count'],
+                        'total_price' => $transportBooking['total_price'],
+                        'status' => 'confirmed',
+                        'special_requests' => $transportBooking['special_requests'] ?? null,
+                        'confirmed_at' => now()
+                    ]);
+
+                    // Update schedule seats
+                    $transportSchedule->bookSeats($transportBooking['passengers_count']);
+
+                    // Create booking item for transport
+                    BookingItem::create([
+                        'booking_id' => $booking->id,
+                        'bookable_type' => TransportSchedule::class,
+                        'bookable_id' => $transportSchedule->id,
+                        'quantity' => $transportBooking['passengers_count'],
+                        'unit_price' => $transportBooking['price_per_person'],
+                        'total_price' => $transportBooking['total_price'],
+                        'details' => [
+                            'pickup_point' => $transportBooking['pickup_point_name'],
+                            'dropoff_point' => $transportBooking['dropoff_point_name'],
+                            'departure_time' => $transportBooking['departure_time'],
+                            'arrival_time' => $transportBooking['arrival_time'],
+                            'transport_booking_id' => $transportBookingRecord->id
+                        ]
+                    ]);
+                }
+            }
+
             DB::commit();
 
             // Clear cart
             Session::forget('cart');
             Session::forget('accommodation_booking');
+            Session::forget('transport_booking');
 
             // Process payment based on method
             if ($request->payment_method === 'mpesa') {

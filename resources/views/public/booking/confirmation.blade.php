@@ -1,19 +1,23 @@
 @extends('layouts.public')
 
-@section('title', 'Booking Confirmation - ' . $booking->booking_reference)
+@section('title', 'Booking Confirmation - TwendeeTickets')
 @section('description', 'Your booking has been confirmed! Booking reference: ' . $booking->booking_reference)
 
 @section('content')
-<div class="bg-gray-50 min-h-screen py-8">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Success Header -->
-        <div class="text-center mb-8">
-            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-                <i class="fas fa-check text-green-600 text-2xl"></i>
-            </div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Booking Confirmed!</h1>
-            <p class="text-lg text-gray-600">Your booking has been successfully confirmed</p>
-        </div>
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
+<div class="bg-gray-50 min-h-screen py-8" style="background-image: url('https://images.unsplash.com/photo-1558628029-4c040d8e0f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=60'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div class="bg-white bg-opacity-95 backdrop-blur-sm">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Success Header -->
+                <div class="text-center mb-8">
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                        <i class="fas fa-check text-green-600 text-2xl"></i>
+                    </div>
+                    <h1 class="text-3xl font-black text-gray-900 mb-2">Booking Confirmed!</h1>
+                    <p class="text-lg text-gray-600">Your booking has been successfully confirmed</p>
+                </div>
 
         <!-- Booking Details Card -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">

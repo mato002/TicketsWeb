@@ -1,9 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Help Center - ConcertHub')
+@section('title', 'Help Center - TwendeeTickets')
 @section('description', 'Find answers to frequently asked questions about booking concerts, shows, performances, accommodations, and more.')
 
 @section('content')
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
 <div class="bg-gray-50 min-h-screen py-8">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->

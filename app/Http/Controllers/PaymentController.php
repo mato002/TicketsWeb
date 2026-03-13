@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Services\PaymentService;
 use App\Services\MpesaService;
+use App\Services\TicketService;
+use App\Services\EmailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -85,12 +87,24 @@ class PaymentController extends Controller
             $result = $this->paymentService->processPayment($booking, $paymentData);
             
             if ($result['success']) {
+                // Update booking status
+                $booking->update([
+                    'status' => 'confirmed',
+                    'confirmed_at' => now(),
+                    'transaction_id' => $result['transaction_id'] ?? null,
+                    'payment_details' => json_encode($result)
+                ]);
+                
+                // Generate tickets and send emails
+                $ticketResult = $booking->generateAndSendTickets();
+                
                 DB::commit();
                 
                 return response()->json([
                     'success' => true,
                     'message' => $result['message'],
-                    'redirect_url' => route('public.booking.confirmation', $booking)
+                    'redirect_url' => route('public.booking.confirmation', $booking),
+                    'tickets_generated' => $ticketResult['success'] ? count($ticketResult['tickets']) : 0
                 ]);
             } else {
                 DB::rollback();
@@ -140,10 +154,14 @@ class PaymentController extends Controller
                         'payment_details' => json_encode($callbackData)
                     ]);
                     
+                    // Generate tickets and send emails
+                    $ticketResult = $booking->generateAndSendTickets();
+                    
                     Log::info('M-Pesa payment confirmed', [
                         'booking_id' => $booking->id,
                         'transaction_id' => $transactionId,
-                        'mpesa_receipt' => $mpesaReceipt
+                        'mpesa_receipt' => $mpesaReceipt,
+                        'tickets_generated' => $ticketResult['success'] ? count($ticketResult['tickets']) : 0
                     ]);
                 }
             } else {

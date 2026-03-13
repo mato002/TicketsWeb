@@ -1,18 +1,22 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Dashboard')
+@section('title', 'Dashboard - TwendeeTickets')
 
 @section('content')
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
 <div class="space-y-6">
     <!-- Welcome Section -->
-    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="text-2xl font-bold">Welcome back, {{ auth()->user()->name }}!</h2>
-                <p class="text-blue-100 mt-1">Here's what's happening with your bookings</p>
-            </div>
-            <div class="text-right">
-                <p class="text-sm text-blue-100">Last login</p>
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white" style="background-image: url('https://images.unsplash.com/photo-1551434677892-1dd2d4ef876?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=60'); background-size: cover; background-position: center;">
+        <div class="bg-black bg-opacity-40 backdrop-blur-sm">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-black text-white">Welcome back, {{ auth()->user()->name }}!</h2>
+                    <p class="text-blue-100 mt-1">Here's what's happening with your bookings</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-blue-100">Last login</p>
                 <p class="text-lg font-semibold">{{ auth()->user()->updated_at->format('M j, Y') }}</p>
             </div>
         </div>

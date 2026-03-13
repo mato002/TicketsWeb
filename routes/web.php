@@ -17,7 +17,13 @@ use App\Http\Controllers\Public\BookingController;
 use App\Http\Controllers\Public\DashboardController;
 use App\Http\Controllers\Public\HelpController;
 use App\Http\Controllers\Public\PagesController;
+use App\Http\Controllers\Public\TransportController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Admin\TransportController as AdminTransportController;
+use App\Http\Controllers\Admin\VehicleController;
+use App\Http\Controllers\Admin\RouteController;
+use App\Http\Controllers\Admin\PickupPointController;
+use App\Http\Controllers\Admin\TransportScheduleController;
 
 // Admin Login Routes (must be before admin.* middleware routes)
 Route::prefix('admin')->name('admin.')->middleware('admin.guest')->group(function () {
@@ -50,6 +56,17 @@ Route::prefix('accommodations')->name('public.accommodations.')->group(function 
     Route::get('/{accommodation}', [PublicAccommodationController::class, 'show'])->name('show');
 });
 
+// Transport Routes
+Route::prefix('transport')->name('public.transport.')->group(function () {
+    Route::get('/', [TransportController::class, 'index'])->name('index');
+    Route::get('/search', [TransportController::class, 'search'])->name('search');
+    Route::get('/{schedule}', [TransportController::class, 'show'])->name('show');
+    Route::post('/{schedule}/book', [TransportController::class, 'book'])->name('book')->middleware('auth');
+    Route::get('/events/{event}', [TransportController::class, 'eventTransport'])->name('event');
+    Route::get('/my-bookings', [TransportController::class, 'myBookings'])->name('my-bookings')->middleware('auth');
+    Route::post('/bookings/{transportBooking}/cancel', [TransportController::class, 'cancelBooking'])->name('cancel-booking')->middleware('auth');
+});
+
 // Cart Routes - Simple and Clean
 Route::prefix('cart')->name('cart.')->group(function () {
     Route::get('/', [BookingController::class, 'cart'])->name('index');
@@ -62,6 +79,8 @@ Route::prefix('cart')->name('cart.')->group(function () {
 Route::prefix('booking')->name('public.booking.')->group(function () {
     Route::get('/accommodation', [BookingController::class, 'accommodation'])->name('accommodation');
     Route::post('/accommodation/{accommodation}', [BookingController::class, 'addAccommodation'])->name('add-accommodation');
+    Route::get('/transport', [BookingController::class, 'transport'])->name('transport');
+    Route::post('/transport/{schedule}', [BookingController::class, 'addTransport'])->name('add-transport');
     Route::get('/checkout', [BookingController::class, 'checkout'])->name('checkout');
     Route::post('/process', [BookingController::class, 'processBooking'])->name('process');
     Route::get('/confirmation/{booking}', [BookingController::class, 'confirmation'])->name('confirmation');
@@ -166,6 +185,8 @@ Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
     Route::resource('bookings', AdminBookingController::class);
     Route::patch('/bookings/{booking}/confirm', [AdminBookingController::class, 'confirm'])->name('bookings.confirm');
     Route::patch('/bookings/{booking}/cancel', [AdminBookingController::class, 'cancel'])->name('bookings.cancel');
+    Route::post('/bookings/{booking}/resend-ticket', [AdminBookingController::class, 'resendTicket'])->name('bookings.resend-ticket');
+    Route::post('/bookings/{booking}/send-test-ticket', [AdminBookingController::class, 'sendTestTicket'])->name('bookings.send-test-ticket');
     
     // User Routes
     Route::resource('users', UserController::class)->except(['create', 'store']);
@@ -211,6 +232,33 @@ Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
     });
     
     Route::post('/bookings/{booking}/refund', [PaymentController::class, 'refund'])->name('bookings.refund');
+    
+    // Transport Management Routes
+    Route::prefix('transport')->name('transport.')->group(function () {
+        Route::get('/dashboard', [AdminTransportController::class, 'dashboard'])->name('dashboard');
+        Route::get('/bookings', [AdminTransportController::class, 'bookings'])->name('bookings');
+        Route::get('/bookings/{booking}', [AdminTransportController::class, 'showBooking'])->name('bookings.show');
+        Route::post('/bookings/{booking}/confirm', [AdminTransportController::class, 'confirmBooking'])->name('bookings.confirm');
+        Route::post('/bookings/{booking}/cancel', [AdminTransportController::class, 'cancelBooking'])->name('bookings.cancel');
+        Route::post('/bookings/{booking}/complete', [AdminTransportController::class, 'completeBooking'])->name('bookings.complete');
+        
+        // Vehicles
+        Route::resource('vehicles', VehicleController::class);
+        Route::post('/vehicles/{vehicle}/toggle-availability', [VehicleController::class, 'toggleAvailability'])->name('vehicles.toggle-availability');
+        
+        // Routes
+        Route::resource('routes', RouteController::class);
+        Route::post('/routes/{route}/toggle-status', [RouteController::class, 'toggleStatus'])->name('routes.toggle-status');
+        
+        // Pickup Points
+        Route::resource('pickup-points', PickupPointController::class);
+        Route::post('/pickup-points/{pickupPoint}/toggle-status', [PickupPointController::class, 'toggleStatus'])->name('pickup-points.toggle-status');
+        
+        // Transport Schedules
+        Route::resource('schedules', TransportScheduleController::class);
+        Route::post('/schedules/{schedule}/toggle-status', [TransportScheduleController::class, 'toggleStatus'])->name('schedules.toggle-status');
+        Route::post('/schedules/{schedule}/duplicate', [TransportScheduleController::class, 'duplicate'])->name('schedules.duplicate');
+    });
 });
 
 Route::middleware('auth')->group(function () {

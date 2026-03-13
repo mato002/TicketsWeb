@@ -4,6 +4,9 @@
 @section('description', 'Find answers to common questions about booking concerts, tickets, accommodations, and more with TwendeeTickets.')
 
 @section('content')
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
 <div class="bg-gradient-to-r from-purple-600 to-blue-600 py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">

@@ -6,6 +6,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Dashboard') - TwendeeTickets Admin</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/logo/logo.svg') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo/logo.svg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo/logo.jpeg') }}">
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->

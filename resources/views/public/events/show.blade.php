@@ -4,6 +4,9 @@
 @section('description', $event->description ? Str::limit($event->description, 160) : 'Join us for an amazing event experience with ' . $event->organizer . ' at ' . $event->venue . ' on ' . $event->event_date->format('M j, Y') . '.')
 
 @section('content')
+<!-- Include Popup Banner Components -->
+@include('components.popup-banner')
+@include('components.scroll-popup')
 <div class="min-h-screen">
     <!-- Hero Section with Background Image -->
     <div class="relative h-96 lg:h-[500px] hero-section">
